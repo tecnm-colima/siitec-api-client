@@ -57,6 +57,27 @@ class SiitecApi extends AbstractClient
 
     private function loadConfigEnv()
     {
+        // LEGACY KEYS
+        if (array_key_exists('SIITEC2_API_CLIENT_ID', $_ENV)) {
+            $this->setClientId($_ENV['SIITEC2_API_CLIENT_ID']);
+        }
+        if (array_key_exists('SIITEC2_API_CLIENT_SECRET', $_ENV)) {
+            $this->setClientSecret($_ENV['SIITEC2_API_CLIENT_SECRET']);
+        }
+        if (array_key_exists('SIITEC2_API_CLIENT_LOGOUT_URI', $_ENV)) {
+            $this->logoutUri = $_ENV['SIITEC2_API_CLIENT_LOGOUT_URI'];
+        } 
+        if (array_key_exists('SIITEC2_API_AUTHORIZE_ENDPOINT', $_ENV)) {
+            $this->getOAuth2Client()->setAuthorizationEndpoint($_ENV['SIITEC2_API_AUTHORIZE_ENDPOINT']);
+        }
+        if (array_key_exists('SIITEC2_API_TOKEN_ENDPOINT', $_ENV)) {
+            $this->getOAuth2Client()->setTokenEndpoint($_ENV['SIITEC2_API_TOKEN_ENDPOINT']);
+        }
+        if (array_key_exists('SIITEC2_API_RESOURCE_ENDPOINT', $_ENV)) {
+            $this->setApiEndpoint($_ENV['SIITEC2_API_RESOURCE_ENDPOINT']);
+        }
+
+        // ENV CONFIG LOADING
         if (array_key_exists('SIITEC_API_CLIENT_ID', $_ENV)) {
             $this->setClientId($_ENV['SIITEC_API_CLIENT_ID']);
         }
