@@ -97,6 +97,16 @@ class SiitecApi extends AbstractClient
         return SiitecApiConstants::PLATFORM_URL.'/index.php/usuarios/logout';
     }
 
+    public static function getPagosUrl() : string 
+    {
+        return SiitecApiConstants::PLATFORM_URL . '/pagos/index.php';
+    }
+
+    public static function getDocenciaUrl() : string
+    {
+        return SiitecApiConstants::PLATFORM_URL . '/docencia/index.php';
+    }
+
     public function getOAuth2Client()
     {
         return parent::getOAuth2Client();
