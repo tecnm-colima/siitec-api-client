@@ -99,11 +99,17 @@ class SiitecApi extends AbstractClient
 
     public static function getPagosUrl() : string 
     {
+        if (array_key_exists('SIITEC_API_PAGOS_URL', $_ENV)) {
+            return $_ENV['SIITEC_API_PAGOS_URL'];
+        }
         return SiitecApiConstants::PLATFORM_URL . '/pagos/index.php';
     }
 
     public static function getDocenciaUrl() : string
     {
+        if (array_key_exists('SIITEC_API_DOCENCIA_URL', $_ENV)) {
+            return $_ENV['SIITEC_API_DOCENCIA_URL'];
+        }
         return SiitecApiConstants::PLATFORM_URL . '/docencia/index.php';
     }
 
