@@ -108,30 +108,34 @@ class SiitecApi extends AbstractClient
         }
     }
 
-    public static function getPlatformUrl() : string
+    public static function getPlatformUrl(string $url = '') : string
     {
-        return SiitecApiConstants::PLATFORM_URL;
+        return SiitecApiConstants::PLATFORM_URL.'/'.ltrim($url,'/');
     }
 
     public static function getLogoutUrl() : string
     {
-        return SiitecApiConstants::PLATFORM_URL.'/index.php/usuarios/logout';
+        return static::getPlatformUrl('/index.php/usuarios/logout');
     }
 
-    public static function getPagosUrl() : string 
+    public static function getPagosUrl(string $url = '') : string 
     {
+        $url = static::getPlatformUrl('/pagos/index.php');
         if (array_key_exists('SIITEC_API_PAGOS_URL', $_ENV)) {
             return $_ENV['SIITEC_API_PAGOS_URL'];
         }
-        return SiitecApiConstants::PLATFORM_URL . '/pagos/index.php';
+        $url.= empty($url) ? '' : '/'.ltrim($url, '/');
+        return $url;
     }
 
-    public static function getDocenciaUrl() : string
+    public static function getDocenciaUrl(string $url = '') : string
     {
+        $url = static::getPlatformUrl('/docencia/index.php');
         if (array_key_exists('SIITEC_API_DOCENCIA_URL', $_ENV)) {
             return $_ENV['SIITEC_API_DOCENCIA_URL'];
         }
-        return SiitecApiConstants::PLATFORM_URL . '/docencia/index.php';
+        $url.= empty($url) ? '' : '/'.ltrim($url,'/');
+        return $url;
     }
 
     public function getOAuth2Client()
