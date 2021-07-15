@@ -120,22 +120,22 @@ class SiitecApi extends AbstractClient
 
     public static function getPagosUrl(string $url = '') : string 
     {
-        $url = static::getPlatformUrl('/pagos/index.php');
+        $retUrl = static::getPlatformUrl('/pagos/index.php');
         if (array_key_exists('SIITEC_API_PAGOS_URL', $_ENV)) {
             return $_ENV['SIITEC_API_PAGOS_URL'];
         }
-        $url.= empty($url) ? '' : '/'.ltrim($url, '/');
-        return $url;
+        $retUrl.= empty($url) ? '' : '/'.ltrim($url, '/');
+        return $retUrl;
     }
 
     public static function getDocenciaUrl(string $url = '') : string
     {
-        $url = static::getPlatformUrl('/docencia/index.php');
+        $retUrl = static::getPlatformUrl('/docencia/index.php');
         if (array_key_exists('SIITEC_API_DOCENCIA_URL', $_ENV)) {
             return $_ENV['SIITEC_API_DOCENCIA_URL'];
         }
-        $url.= empty($url) ? '' : '/'.ltrim($url,'/');
-        return $url;
+        $retUrl.= empty($url) ? '' : '/'.ltrim($url,'/');
+        return $retUrl;
     }
 
     public function getOAuth2Client()
