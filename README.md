@@ -59,123 +59,51 @@ servidor de SIITEC. Ese complejo mecanismo se simplifica utilizando funciones
 de la librería, que permiten centrarse menos en la estructura y más en la
 funcionalidad.
 
-### Ejemplos de uso
-
-#### LLamado al inicio de sesión.
-
-Para iniciar sesión se requiere tener un archivo o función disparadora de la
-acción. En el siguiente código se muestra cómo hacer una petición para inicio
-de sesión a SIITEC.
+### Implementación de las funciones de inicio de sesión
 
 ```php
-<?php
-/**
- * Archivo: login.php
- * Establecer la URI como manejadora del inicio de sesión.
- */
-// Cargar liberías
+namespace App\Controllers;
+
 use ITColima\SiitecApi\SiitecApi;
+use Francerz\Http\Utils\UriHelper;
 
-// Cargar autoloader de composer.
-require_once __DIR__.'/vendor/autoload.php';
+class OAuth2 extends AbstractController
+{
+    public function login()
+    {
+        $siitecApi = new SiitecApi();
 
-// Para un correcto funcionamiento de la API se requiere contar con sesiones.
-session_start();
+        if ($api->isLoggedIn()) {
+            $response = $siitecApi->redirectTo($siitecApi->siteUrl());
+            return $siitecApi->emitResponse($response);
+        }
 
-// Inicializar instancia de API
-$api = new SiitecApi();
+        $response = $siitecApi->login(
+            $siitecApi->siteUrl('/oauth2/login_handler'),
+            $siitecApi->siteUrl('/oauth2/logout')
+        );
+        return $siitecApi->emitResponse($response);
+    }
 
-// Verificar si hay sesión iniciada, si es así redirigir a donde señale el
-// parámetro `redir` de la URL o a "principal.php"
-if ($api->getPerfil()) {
-    http_response_code(307);
-    header('Location', $api->getRedir('https://www.ejemplo.com/principal.php'));
-    return;
+    public function login_handler()
+    {
+        $siitecApi = new SiitecApi();
+        $siitecApi->handleLogin();
+        return $siitecApi->redirectTo($siitec->siteUrl());
+    }
+
+    public function logout()
+    {
+        $siitecApi = new SiitecApi();
+        $response = $siitecApi->handleLogout();
+        return $siitecApi->emitResponse($response);
+    }
 }
-
-// Estableceer URL donde se recibirá el inicio de sesión de SIITEC
-$api->setLoginHandlerUri('https://www.ejemplo.com/login_handler.php');
-
-// Realizar inicio de sesión con $scopes y $csrfKey opcionales.
-$api->performLogin();
 ```
 
-> **Variaciones**
-> El código anterior está planteado para una aplicación que utilice PHP puro,
-> sin un framework o libería adicional que soporte funcionalidades básicas.
-> A continuación se describen algunas de las variaciones comunes para el código:
-> * Es posible que el framework haga la carga automática del
->   **autoloader de composer**.
-> * La redirección puede cambiar dependiendo del framework, a continuación se
->   incluyen algunos ejemplos con un framework distinto:
->   * **CodeIgniter 3**
->     ```php
->     if ($api->getPerfil()) {
->         redirect($api->getRedir(site_url('principal')));
->     }
->     $api->setLoginHandlerUri(site_url('login_handler'));
->     $api->performLogin();
->     ```
->  * **CodeIgniter 4**
->    ```php
->    if ($api->getPerfil()) {
->         return redirect()->to($api->getRedir(site_url('principal')));
->    }
->    $api->setLoginHandlerUri(site_url('login_handler'));
->    return CodeIgniter4::outputResponsePsr7($this->response, $api->getLoginRequest());
->    ```
->    > Se requiere instalar el paquete `francerz/utils` para utilizar
->    > `Francerz\Utils\Frameworks\CodeIgniter4`.
-
-#### Manejo de respuesta del inicio de sesión
-
-Una vez iniciada la acción el servidor solicitará la autorización de acceso al
-usuario y cuando se obtenga un resultado, este será devuelto a la URI manejadora
-del inicio de sesión.
-
-```php
-<?php
-/**
- * Archivo: login_handler.php
- * Manejar la respuesta del servidor al iniciar sesión.
- */
-// Cargar liberías
-use ITColima\SiitecApi\SiitecApi;
-
-// Cargar autoloader de composer.
-require_once __DIR__.'/vendor/autoload.php';
-
-// Para un correcto funcionamiento de la API se requiere contar con sesiones.
-session_start();
-
-// Inicializar instancia de API
-$api = new SiitecApi();
-
-// Capturar la petición entrante y permitir a la librería gestionar el proceso.
-$api->handleLogin();
-
-// Una vez concluído el inicio de sesión, redirigir a principal.php
-http_response_code(307);
-header('Location', $api->getRedir('https://www.ejemplo.com/principal.php'));
-```
-
-#### Acceso a los datos del usuario identificado
-
-Uno de los comportamientos básicos esperados al iniciar sesión es identificar
-al usuario que haya ingresado al sistema. Para acceder a estos datos, la
-API de manera automática hace la recuperación desde el servidor y los almacena
-temporalmente durante la sesión.
-
-```php
-<?php
-/**
- * Archivo: perfil.php
- */
-// Cargar librerías
-use ITColima\SiitecApi\SiitecApi;
-
-
-```
+> **NOTA**
+> La implementación puede variar dependiendo del framework y técnica
+> para el desarrollo que se esté utilizando.
 
 DEPURACIÓN
 ----------
