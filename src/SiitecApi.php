@@ -1,6 +1,7 @@
 <?php
 namespace ITColima\SiitecApi;
 
+use Fig\Http\Message\StatusCodeInterface;
 use Francerz\ApiClient\AbstractClient;
 use Francerz\Http\Client as HttpClient;
 use Francerz\Http\HttpFactory;
@@ -12,7 +13,6 @@ use Francerz\Http\Utils\UriHelper;
 use Francerz\OAuth2\ScopeHelper;
 use InvalidArgumentException;
 use ITColima\SiitecApi\Resources\Usuario\PerfilResource;
-use Psr\Http\Client\ClientInterface as HttpClientInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
@@ -26,13 +26,10 @@ class SiitecApi extends AbstractClient
 
     private $loginHandlerUri = null;
 
-    public function __construct(
-        ?string $configFile = null,
-        ?HttpFactoryManager $httpFactory = null,
-        ?HttpClientInterface $httpClient = null
-    ) {
-        $httpFactory = isset($httpFactory) ? $httpFactory : new HttpFactoryManager(new HttpFactory());
-        $httpClient = isset($httpClient) ? $httpClient : new HttpClient();
+    public function __construct()
+    {
+        $httpFactory = new HttpFactoryManager(new HttpFactory());
+        $httpClient = new HttpClient();
         $this->httpHelper = new HttpHelper($httpFactory);
         parent::__construct($httpFactory, $httpClient);
 
@@ -40,18 +37,14 @@ class SiitecApi extends AbstractClient
         $this->getOAuth2Client()->setTokenEndpoint(SiitecApiConstants::TOKEN_ENDPOINT);
         $this->setApiEndpoint(SiitecApiConstants::API_ENDPOINT);
 
-        $this->setAccessTokenSessionKey('siitec.access_token');
+        $this->setOwnerAccessTokenSessionKey('siitec.access_token');
         $this->setClientAccessTokenSessionKey('siitec.client_access_token');
 
         $this->loadDefaultAccessTokenHandlers();
         $this->loadDefaultClientAccessTokenHandlers();
 
-        $this->loadAccessToken();
+        $this->loadOwnerAccessToken();
         $this->loadClientAccessToken();
-
-        if (isset($configFile)) {
-            $this->loadConfigFile($configFile);
-        }
         $this->loadConfigEnv();   
     }
 
@@ -77,16 +70,23 @@ class SiitecApi extends AbstractClient
             $this->setApiEndpoint($_ENV['SIITEC2_API_RESOURCE_ENDPOINT']);
         }
 
-        // ENV CONFIG LOADING
+        # REQUIRED
         if (array_key_exists('SIITEC_API_CLIENT_ID', $_ENV)) {
             $this->setClientId($_ENV['SIITEC_API_CLIENT_ID']);
         }
         if (array_key_exists('SIITEC_API_CLIENT_SECRET', $_ENV)) {
             $this->setClientSecret($_ENV['SIITEC_API_CLIENT_SECRET']);
         }
-        if (array_key_exists('SIITEC_API_CLIENT_LOGOUT_URI', $_ENV)) {
-            $this->logoutUri = $_ENV['SIITEC_API_CLIENT_LOGOUT_URI'];
-        } 
+
+        # OPTIONAL
+        if (array_key_exists('SIITEC_API_LOGIN_HANDLER_URI', $_ENV)) {
+            $this->setLoginHandlerUri($_ENV['SIITEC_API_LOGIN_HANDLER_URI']);
+        }
+        if (array_key_exists('SIITEC_API_LOGOUT_URI', $_ENV)) {
+            $this->logoutUri = $_ENV['SIITEC_API_LOGOUT_URI'];
+        }
+
+        # DEBUGGING
         if (array_key_exists('SIITEC_API_AUTHORIZE_ENDPOINT', $_ENV)) {
             $this->getOAuth2Client()->setAuthorizationEndpoint($_ENV['SIITEC_API_AUTHORIZE_ENDPOINT']);
         }
@@ -95,16 +95,6 @@ class SiitecApi extends AbstractClient
         }
         if (array_key_exists('SIITEC_API_RESOURCE_ENDPOINT', $_ENV)) {
             $this->setApiEndpoint($_ENV['SIITEC_API_RESOURCE_ENDPOINT']);
-        }
-    }
-
-    public function loadConfigFile(string $config)
-    {
-        $config = json_decode(file_get_contents($config));
-        $this->setClientId($config->client_id);
-        $this->setClientSecret($config->client_secret);
-        if (isset($config->callback_endpoint)) {
-            $this->getOauth2Client()->setCallbackEndpoint($config->callback_endpoint);
         }
     }
 
@@ -122,7 +112,7 @@ class SiitecApi extends AbstractClient
     {
         $retUrl = static::getPlatformUrl('/pagos/index.php');
         if (array_key_exists('SIITEC_API_PAGOS_URL', $_ENV)) {
-            return $_ENV['SIITEC_API_PAGOS_URL'];
+            $retUrl = $_ENV['SIITEC_API_PAGOS_URL'];
         }
         $retUrl.= empty($url) ? '' : '/'.ltrim($url, '/');
         return $retUrl;
@@ -132,10 +122,32 @@ class SiitecApi extends AbstractClient
     {
         $retUrl = static::getPlatformUrl('/docencia/index.php');
         if (array_key_exists('SIITEC_API_DOCENCIA_URL', $_ENV)) {
-            return $_ENV['SIITEC_API_DOCENCIA_URL'];
+            $retUrl = $_ENV['SIITEC_API_DOCENCIA_URL'];
         }
         $retUrl.= empty($url) ? '' : '/'.ltrim($url,'/');
         return $retUrl;
+    }
+
+    /**
+     * Shorthand to emit PSR-7 responses.
+     *
+     * @param ResponseInterface $response
+     * @return void
+     */
+    public static function emitResponse(ResponseInterface $response, ?ServerInterface $sever = null)
+    {
+        $server = $server ?? Server::new();
+        $server->emitResponse($response);
+    }
+
+    public function redirectTo($location, int $code = StatusCodeInterface::STATUS_TEMPORARY_REDIRECT)
+    {
+        return $this->httpHelper->makeRedirect($location, $code);
+    }
+
+    public function siteUrl(?string $path = null)
+    {
+        return UriHelper::getSiteUrl($path);
     }
 
     public function getOAuth2Client()
@@ -153,19 +165,6 @@ class SiitecApi extends AbstractClient
     public function redirectAuthUri($loginUri)
     {
         return parent::makeAuthorizeRedirUri($loginUri);
-    }
-
-    /**
-     * @deprecated 0.1.17
-     * Creates a Redirect response for redirectAuthUri()
-     *
-     * @param string|UriInterface $loginUri
-     * @return ResponseInterface
-     */
-    public function redirectAuthRequest($loginUri)
-    {
-        $uri = $this->redirectAuthUri($loginUri);
-        return $this->httpHelper->makeRedirect($uri);
     }
 
     /**
@@ -195,25 +194,41 @@ class SiitecApi extends AbstractClient
         return parent::makeRequestAuthorizationCodeUri($loginHandlerUri, $scopes, $state);
     }
 
+    /**
+     * Creates a Login Request and then is packed into a PSR-7 ResponseInterface
+     * object.
+     *
+     * @param array $scopes OAuth2 scopes
+     * @param string $state
+     * @return ResponseInterface
+     */
     public function getLoginRequest(array $scopes = [], string $state = '') : ResponseInterface
     {
         $authCodeUri = $this->getAuthCodeUri($scopes, $state);
         return $this->httpHelper->makeRedirect($authCodeUri);
     }
 
+    /**
+     * @deprecated v0.1.7
+     * Deprecated in favor of SiitecApi::emitResponse()
+     * 
+     * Creates a Login request and then emits.
+     *
+     * @param array $scopes
+     * @param string $state
+     * @param ServerInterface|null $server
+     * @return void
+     */
     public function performLogin(array $scopes = [], string $state = '', ?ServerInterface $server = null)
     {
-        if (is_null($server)) {
-            $server = new Server();
-        }
         $response = $this->getLoginRequest($scopes, $state);
-        $server->emitResponse($response);
+        $this->emitResponse($response);
     }
 
     public function setLoginHandlerUri($uri)
     {
-        $uriFactory = $this->getHttpFactoryManager()->getUriFactory();
         if (is_string($uri)) {
+            $uriFactory = $this->getHttpFactoryManager()->getUriFactory();
             $uri = $uriFactory->createUri($uri);
         }
         $this->loginHandlerUri = $uri;
@@ -310,7 +325,7 @@ class SiitecApi extends AbstractClient
     public function revoke()
     {
         $this->unsetPerfil();
-        $this->revokeAcccessToken();
+        $this->revokeOwnerAcccessToken();
     }
 
     /**
