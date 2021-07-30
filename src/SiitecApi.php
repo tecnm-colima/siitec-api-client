@@ -145,9 +145,14 @@ class SiitecApi extends AbstractClient
         return $this->httpHelper->makeRedirect($location, $code);
     }
 
-    public function siteUrl(?string $path = null)
+    public static function siteUrl(?string $path = null)
     {
         return UriHelper::getSiteUrl($path);
+    }
+
+    public static function baseUrl(?string $path = null)
+    {
+        return UriHelper::getBaseUrl($path);
     }
 
     public function getOAuth2Client()
