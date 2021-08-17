@@ -11,7 +11,8 @@ class PeriodosResource extends AbstractResource
      * Obtiene los periodos escolares según los parámetros proporcionados
      *
      * @param array $params
-     *  - fin_desde: Periodos que terminen a partir del a fecha proporcionada
+     *  - fin_desde: Periodos que terminen a partir de la fecha proporcionada
+     *  - inicio_desde: Periodos que inician a partir de la fecha proporcionada.
      * @return array
      */
     public function getAll(array $params = [])
