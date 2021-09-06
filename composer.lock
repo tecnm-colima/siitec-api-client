@@ -104,16 +104,16 @@
         },
         {
             "name": "francerz/http",
-            "version": "v0.3.4",
+            "version": "v0.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/francerz/php-http.git",
-                "reference": "8b10fc58a19f07ef1754cb5755594164e5cac740"
+                "reference": "3cdacde9d9547bb9568ce90bb544bb51d71ca870"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/francerz/php-http/zipball/8b10fc58a19f07ef1754cb5755594164e5cac740",
-                "reference": "8b10fc58a19f07ef1754cb5755594164e5cac740",
+                "url": "https://api.github.com/repos/francerz/php-http/zipball/3cdacde9d9547bb9568ce90bb544bb51d71ca870",
+                "reference": "3cdacde9d9547bb9568ce90bb544bb51d71ca870",
                 "shasum": ""
             },
             "require": {
@@ -137,9 +137,9 @@
             "description": "Basic HTTP client",
             "support": {
                 "issues": "https://github.com/francerz/php-http/issues",
-                "source": "https://github.com/francerz/php-http/tree/v0.3.4"
+                "source": "https://github.com/francerz/php-http/tree/v0.3.5"
             },
-            "time": "2021-09-06T13:57:50+00:00"
+            "time": "2021-09-06T14:51:31+00:00"
         },
         {
             "name": "francerz/http-utils",
