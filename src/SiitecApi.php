@@ -30,6 +30,7 @@ class SiitecApi extends AbstractClient
     {
         $httpFactory = new HttpFactoryManager(new HttpFactory());
         $httpClient = new HttpClient();
+        $httpClient->setCaCertFile(dirname(__FILE__, 2).'/cacert.pem');
         $this->httpHelper = new HttpHelper($httpFactory);
         parent::__construct($httpFactory, $httpClient);
 
