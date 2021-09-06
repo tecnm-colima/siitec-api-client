@@ -20,21 +20,22 @@ use RuntimeException;
 
 class SiitecApi extends AbstractClient
 {
+    const SSL_MODE_DEFAULT = 0;
+    const SSL_MODE_DISABLED = 1;
+    const SSL_MODE_INTERNAL = 2;
+
     private $perfil = null;
-
     private $httpHelper;
-
     private $loginHandlerUri = null;
 
     public function __construct()
     {
         $httpFactory = new HttpFactoryManager(new HttpFactory());
         $httpClient = new HttpClient();
-        $httpClient->setSSLCheck(false);
-        $httpClient->setCaCertFile(dirname(__FILE__, 2).'/cacert.pem');
         $this->httpHelper = new HttpHelper($httpFactory);
         parent::__construct($httpFactory, $httpClient);
-
+        $this->setSSLMode(self::SSL_MODE_DEFAULT);
+        
         $this->getOAuth2Client()->setAuthorizationEndpoint(SiitecApiConstants::AUTHORIZE_ENDPOINT);
         $this->getOAuth2Client()->setTokenEndpoint(SiitecApiConstants::TOKEN_ENDPOINT);
         $this->setApiEndpoint(SiitecApiConstants::API_ENDPOINT);
@@ -155,6 +156,27 @@ class SiitecApi extends AbstractClient
     public static function baseUrl(?string $path = null)
     {
         return UriHelper::getBaseUrl($path);
+    }
+
+    public function setSSLMode($mode = self::SSL_MODE_DEFAULT)
+    {
+        $httpClient = $this->getHttpClient();
+        if (!$httpClient instanceof HttpClient) return;
+
+        switch ($mode) {
+            case self::SSL_MODE_DEFAULT:
+                $httpClient->setSSLCheck(true);
+                $httpClient->setCaCertFile(null);
+                break;
+            case self::SSL_MODE_INTERNAL:
+                $httpClient->setSSLCheck(true);
+                $httpClient->setCaCertFile(dirname(__FILE__, 2).'/cacert.pem');
+                break;
+            case self::SSL_MODE_DISABLED:
+                $httpClient->setSSLCheck(false);
+                $httpClient->setCaCertFile(null);
+                break;
+        }
     }
 
     public function getOAuth2Client()
