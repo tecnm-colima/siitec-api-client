@@ -1,4 +1,5 @@
 <?php
+
 namespace ITColima\SiitecApi;
 
 use Fig\Http\Message\StatusCodeInterface;
@@ -12,6 +13,7 @@ use Francerz\Http\Utils\ServerInterface;
 use Francerz\Http\Utils\UriHelper;
 use Francerz\OAuth2\ScopeHelper;
 use InvalidArgumentException;
+use ITColima\SiitecApi\Model\Perfil;
 use ITColima\SiitecApi\Resources\Usuario\PerfilResource;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -20,10 +22,11 @@ use RuntimeException;
 
 class SiitecApi extends AbstractClient
 {
-    const SSL_MODE_DEFAULT = 0;
-    const SSL_MODE_DISABLED = 1;
-    const SSL_MODE_INTERNAL = 2;
+    public const SSL_MODE_DEFAULT = 0;
+    public const SSL_MODE_DISABLED = 1;
+    public const SSL_MODE_INTERNAL = 2;
 
+    /** @var Perfil */
     private $perfil = null;
     private $httpHelper;
     private $loginHandlerUri = null;
@@ -35,7 +38,7 @@ class SiitecApi extends AbstractClient
         $this->httpHelper = new HttpHelper($httpFactory);
         parent::__construct($httpFactory, $httpClient);
         $this->setSSLMode(self::SSL_MODE_DEFAULT);
-        
+
         $this->getOAuth2Client()->setAuthorizationEndpoint(SiitecApiConstants::AUTHORIZE_ENDPOINT);
         $this->getOAuth2Client()->setTokenEndpoint(SiitecApiConstants::TOKEN_ENDPOINT);
         $this->setApiEndpoint(SiitecApiConstants::API_ENDPOINT);
@@ -48,7 +51,7 @@ class SiitecApi extends AbstractClient
 
         $this->loadOwnerAccessToken();
         $this->loadClientAccessToken();
-        $this->loadConfigEnv();   
+        $this->loadConfigEnv();
     }
 
     private function loadConfigEnv()
@@ -62,7 +65,7 @@ class SiitecApi extends AbstractClient
         }
         if (array_key_exists('SIITEC2_API_CLIENT_LOGOUT_URI', $_ENV)) {
             $this->logoutUri = $_ENV['SIITEC2_API_CLIENT_LOGOUT_URI'];
-        } 
+        }
         if (array_key_exists('SIITEC2_API_AUTHORIZE_ENDPOINT', $_ENV)) {
             $this->getOAuth2Client()->setAuthorizationEndpoint($_ENV['SIITEC2_API_AUTHORIZE_ENDPOINT']);
         }
@@ -101,33 +104,33 @@ class SiitecApi extends AbstractClient
         }
     }
 
-    public static function getPlatformUrl(string $url = '') : string
+    public static function getPlatformUrl(string $url = ''): string
     {
-        return SiitecApiConstants::PLATFORM_URL.'/'.ltrim($url,'/');
+        return SiitecApiConstants::PLATFORM_URL . '/' . ltrim($url, '/');
     }
 
-    public static function getLogoutUrl() : string
+    public static function getLogoutUrl(): string
     {
         return static::getPlatformUrl('/index.php/usuarios/logout');
     }
 
-    public static function getPagosUrl(string $url = '') : string 
+    public static function getPagosUrl(string $url = ''): string
     {
         $retUrl = static::getPlatformUrl('/pagos/index.php');
         if (array_key_exists('SIITEC_API_PAGOS_URL', $_ENV)) {
             $retUrl = $_ENV['SIITEC_API_PAGOS_URL'];
         }
-        $retUrl.= empty($url) ? '' : '/'.ltrim($url, '/');
+        $retUrl .= empty($url) ? '' : '/' . ltrim($url, '/');
         return $retUrl;
     }
 
-    public static function getDocenciaUrl(string $url = '') : string
+    public static function getDocenciaUrl(string $url = ''): string
     {
         $retUrl = static::getPlatformUrl('/docencia/index.php');
         if (array_key_exists('SIITEC_API_DOCENCIA_URL', $_ENV)) {
             $retUrl = $_ENV['SIITEC_API_DOCENCIA_URL'];
         }
-        $retUrl.= empty($url) ? '' : '/'.ltrim($url,'/');
+        $retUrl .= empty($url) ? '' : '/' . ltrim($url, '/');
         return $retUrl;
     }
 
@@ -161,7 +164,9 @@ class SiitecApi extends AbstractClient
     public function setSSLMode($mode = self::SSL_MODE_DEFAULT)
     {
         $httpClient = $this->getHttpClient();
-        if (!$httpClient instanceof HttpClient) return;
+        if (!$httpClient instanceof HttpClient) {
+            return;
+        }
 
         switch ($mode) {
             case self::SSL_MODE_DEFAULT:
@@ -170,7 +175,7 @@ class SiitecApi extends AbstractClient
                 break;
             case self::SSL_MODE_INTERNAL:
                 $httpClient->setSSLCheck(true);
-                $httpClient->setCaCertFile(dirname(__FILE__, 2).'/cacert.pem');
+                $httpClient->setCaCertFile(dirname(__FILE__, 2) . '/cacert.pem');
                 break;
             case self::SSL_MODE_DISABLED:
                 $httpClient->setSSLCheck(false);
@@ -216,7 +221,7 @@ class SiitecApi extends AbstractClient
      * @param string $state
      * @return UriInterface
      */
-    public function getAuthCodeUri(array $scopes = [], string $state = '') : UriInterface
+    public function getAuthCodeUri(array $scopes = [], string $state = ''): UriInterface
     {
         $loginHandlerUri = $this->addFollowParameters($this->loginHandlerUri);
         $scopes = ScopeHelper::merge($scopes, [SiitecUserScopes::GET_USUARIO_PERFIL_OWN]);
@@ -231,7 +236,7 @@ class SiitecApi extends AbstractClient
      * @param string $state
      * @return ResponseInterface
      */
-    public function getLoginRequest(array $scopes = [], string $state = '') : ResponseInterface
+    public function getLoginRequest(array $scopes = [], string $state = ''): ResponseInterface
     {
         $authCodeUri = $this->getAuthCodeUri($scopes, $state);
         return $this->httpHelper->makeRedirect($authCodeUri);
@@ -240,7 +245,7 @@ class SiitecApi extends AbstractClient
     /**
      * @deprecated v0.1.7
      * Deprecated in favor of SiitecApi::emitResponse()
-     * 
+     *
      * Creates a Login request and then emits.
      *
      * @param array $scopes
@@ -286,7 +291,7 @@ class SiitecApi extends AbstractClient
         $uri = parent::makeRequestAuthorizationCodeUri($handlerUri, $scopes, $state);
 
         $uri = UriHelper::withQueryParam($uri, 'logout', $logoutUri);
-        
+
         return $this->httpHelper->makeRedirect($uri);
     }
 
@@ -362,7 +367,7 @@ class SiitecApi extends AbstractClient
      *
      * @return ResponseInterface
      */
-    public function handleLogout() : ResponseInterface
+    public function handleLogout(): ResponseInterface
     {
         $this->revoke();
 

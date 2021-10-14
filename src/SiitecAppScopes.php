@@ -4,6 +4,6 @@ namespace ITColima\SiitecApi;
 
 interface SiitecAppScopes
 {
-    const POST_APP_EMAIL = 'app.email:post';
-    const POST_ESCOLARES_KARDEX = 'escolares.kardex:post';
+    public const POST_APP_EMAIL = 'app.email:post';
+    public const POST_ESCOLARES_KARDEX = 'escolares.kardex:post';
 }
