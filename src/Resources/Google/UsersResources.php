@@ -1,6 +1,6 @@
 <?php 
 
-namespace itcolima\SiitecApi\Resources\Google;
+namespace ITColima\SiitecApi\Resources\Google;
 
 use Francerz\Http\Utils\Constants\MediaTypes;
 use Francerz\Http\Utils\HttpHelper;
