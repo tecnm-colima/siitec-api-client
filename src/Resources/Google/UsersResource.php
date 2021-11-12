@@ -8,7 +8,7 @@ use ITColima\SiitecApi\AbstractResource;
 use ITColima\SiitecApi\Model\Google\User;
 use ITColima\SiitecApi\Model\Google\UserPhoto;
 
-class UsersResources extends AbstractResource
+class UsersResource extends AbstractResource
 {
     /**
      * Envía los datos para poder crear una cuenta de usuario nueva.
