@@ -5,6 +5,7 @@ namespace ITColima\SiitecApi\Resources\Google;
 use Francerz\Http\Utils\Constants\MediaTypes;
 use Francerz\Http\Utils\HttpHelper;
 use ITColima\SiitecApi\AbstractResource;
+use ITColima\SiitecApi\Model\Google\Member;
 use ITColima\SiitecApi\Model\Google\User;
 use ITColima\SiitecApi\Model\Google\UserPhoto;
 
@@ -157,6 +158,33 @@ class UsersResource extends AbstractResource
     {
         $this->requiresClientAccessToken(true);
         $response = $this->_post("/google/users/{$email}/alias", ['alias' => $alias]);
+        return HttpHelper::getContent($response);
+    }
+
+    /**
+     *  Funcion para obtener la informacion de un grupo.
+     * 
+     * @param string $email
+     * @return void
+     */
+    public function getInfoGroup($email)
+    {
+        $this->requiresClientAccessToken(true);
+        $response = $this->_get("/google/users/{$email}/group", []);
+        return httpHelper::getContent($response);
+    }
+
+    /**
+     * Funcion para añadir miembros  a un grupo.
+     * 
+     * @param string $email
+     * @param Member $member
+     * @return void
+     */
+    public function insertMemeber($email, Member $member)
+    {
+        $this->requiresClientAccessToken(true);
+        $response = $this->_put("/google/users/{$email}/group", $member, MediaTypes::APPLICATION_JSON);
         return HttpHelper::getContent($response);
     }
 }
