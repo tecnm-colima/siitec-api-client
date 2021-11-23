@@ -48,7 +48,7 @@ class UsersResource extends AbstractResource
     public function putPhoto($email, UserPhoto $photo)
     {
         $this->requiresClientAccessToken(true);
-        $response = $this->_put("/google/users/{$email}", $photo, MediaTypes::APPLICATION_JSON);
+        $response = $this->_put("/google/users/{$email}/foto", $photo, MediaTypes::APPLICATION_JSON);
         return HttpHelper::getContent($response);
     }
 
