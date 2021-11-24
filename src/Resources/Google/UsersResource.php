@@ -52,6 +52,20 @@ class UsersResource extends AbstractResource
         return HttpHelper::getContent($response);
     }
 
+      /**
+     * Actualiza el nombre de usuario del correo especificado.
+     *
+     * @param string $email
+     * @param string $newEmail
+     * @return void
+     */
+    public function updateEmail($email, $newEmail)
+    {
+        $this->requiresClientAccessToken(true);
+        $response = $this->_patch("/google/users/{$email}/email", $newEmail);
+        return HttpHelper::getContent($response);
+    }
+
     /**
      * Suspende la cuenta de correo deseada.
      *
