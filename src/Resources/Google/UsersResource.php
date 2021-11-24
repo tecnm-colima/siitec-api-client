@@ -62,7 +62,7 @@ class UsersResource extends AbstractResource
     public function updateEmail($email, $newEmail)
     {
         $this->requiresClientAccessToken(true);
-        $response = $this->_patch("/google/users/{$email}/email", $newEmail);
+        $response = $this->_patch("/google/users/{$email}/email", ['newEmail' => $newEmail]);
         return HttpHelper::getContent($response);
     }
 
