@@ -157,11 +157,11 @@ class UsersResource extends AbstractResource
     public function removeAlias($email, $alias)
     {
         $this->requiresClientAccessToken(true);
-        $response = $this->_delete("/google/users/{$email}/alias", ['alias' => $alias]);
+        $response = $this->_delete("/google/users/{$email}/alias/$alias");
         return HttpHelper::getContent($response);
     }
 
-    /**
+     /**
      * Añade un alias a una dirección de correo.
      *
      * @param string $email
