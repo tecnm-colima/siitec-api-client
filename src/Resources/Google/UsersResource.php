@@ -7,6 +7,7 @@ use Francerz\Http\Utils\HttpHelper;
 use ITColima\SiitecApi\AbstractResource;
 use ITColima\SiitecApi\Model\Google\Member;
 use ITColima\SiitecApi\Model\Google\User;
+use ITColima\SiitecApi\Model\Google\UserName;
 use ITColima\SiitecApi\Model\Google\UserPhoto;
 
 class UsersResource extends AbstractResource
@@ -31,7 +32,7 @@ class UsersResource extends AbstractResource
      * @param User $user
      * @return void
      */
-    public function update($email, User $user)
+    public function update($email, UserName $user)
     {
         $this->requiresClientAccessToken(true);
         $response = $this->_patch("/google/users/{$email}", $user);
