@@ -38,6 +38,7 @@ class SiitecApi
 
     private $httpClient;
     private $oauth2Client;
+    private $oauth2ClientParams;
     private $resourcesEndpoint;
 
     /** @var Perfil */
@@ -109,15 +110,15 @@ class SiitecApi
         $this->httpClient = new HttpClient();
         $this->httpHelper = new HttpHelper(new HttpFactoryManager(new HttpFactory()));
 
-        $oauth2Client = new SiitecOAuth2Client();
+        $this->oauth2ClientParams = new SiitecOAuth2Client();
         $this->oauth2Client = new OAuth2Client(
-            $oauth2Client,
+            $this->oauth2ClientParams,
             $this->httpClient,
             $this->httpHelper->getHttpFactoryManager()->getRequestFactory(),
-            $oauth2Client,  // client saver
-            $oauth2Client,  // owner saver
-            $oauth2Client,  // state manager
-            $oauth2Client   // pkce manager
+            $this->oauth2ClientParams,  // client saver
+            $this->oauth2ClientParams,  // owner saver
+            $this->oauth2ClientParams,  // state manager
+            $this->oauth2ClientParams   // pkce manager
         );
         $this->init();
     }
@@ -262,10 +263,10 @@ class SiitecApi
      * @param string|UriInterface $callbackUri
      * @param string|UriInterface $logoutUri
      * @param string[]|string $scopes
-     * @param bool $autoEmit
-     * @return UriInterface
+     * @param string|null $state
+     * @return ResponseInterface
      */
-    public function login($callbackUri, $logoutUri, $scopes = [])
+    public function login($callbackUri, $logoutUri, $scopes = [], $state = null)
     {
         $uriFactory = $this->httpHelper->getHttpFactoryManager()->getUriFactory();
 
@@ -275,6 +276,7 @@ class SiitecApi
         if (!$callbackUri instanceof UriInterface) {
             throw new InvalidArgumentException('Invalid $callbackUri.');
         }
+        $this->oauth2ClientParams->setCallbackEndpoint($callbackUri);
 
         if (is_string($logoutUri)) {
             $logoutUri = $uriFactory->createUri($logoutUri);

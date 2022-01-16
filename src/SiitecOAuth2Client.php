@@ -88,6 +88,11 @@ class SiitecOAuth2Client implements
         return $this->tokenEndpoint;
     }
 
+    public function setCallbackEndpoint(?UriInterface $callbackEndpoint)
+    {
+        $this->callbackEndpoint = $callbackEndpoint;
+    }
+
     public function getCallbackEndpoint(): ?UriInterface
     {
         return $this->callbackEndpoint;
