@@ -265,7 +265,7 @@ class SiitecApi
      * @param bool $autoEmit
      * @return UriInterface
      */
-    public function login($callbackUri, $logoutUri, $scopes = [], $autoEmit = false)
+    public function login($callbackUri, $logoutUri, $scopes = [])
     {
         $uriFactory = $this->httpHelper->getHttpFactoryManager()->getUriFactory();
 
@@ -288,12 +288,7 @@ class SiitecApi
 
         $uri = UriHelper::withQueryParam($uri, 'logout', $logoutUri);
 
-        if ($autoEmit) {
-            $redirect = $this->httpHelper->makeRedirect($uri);
-            self::emitResponse($redirect);
-        }
-
-        return $uri;
+        return $this->httpHelper->makeRedirect($uri);
     }
 
     public function handleLogin(?ServerRequestInterface $request = null)
@@ -381,26 +376,6 @@ class SiitecApi
             return $this->httpHelper->makeRedirect($continue);
         }
         return $this->httpHelper->makeRedirect(static::getPlatformUrl());
-    }
-
-    private function createLogoutResponse()
-    {
-        $request = $this->httpHelper->getCurrentRequest();
-        $currentUri = $request->getUri();
-        $continue = UriHelper::getQueryParam($currentUri, 'continue');
-        if (empty($continue)) {
-            return $this->httpHelper->makeRedirect(static::getPlatformUrl());
-        }
-        return $this->httpHelper->makeRedirect($continue);
-    }
-
-    public function logout($autoEmit = false)
-    {
-        $response = $this->createLogoutResponse();
-        if ($autoEmit) {
-            self::emitResponse($response);
-        }
-        return $response;
     }
 
     /**
