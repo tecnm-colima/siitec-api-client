@@ -18,7 +18,7 @@ class ClientTest extends TestCase
         $siitecApi = new SiitecApi();
         $usersRes = new UsersResource($siitecApi);
 
-        $user= new User();
+        $user = new User();
         $user->email = 'pruebacliente@colima.tecnm.mx';
         $user->nombre = 'Prueba';
         $user->apellidos = 'Cliente prueba';

@@ -50,5 +50,5 @@ class GruposResource extends AbstractResource
         $this->requiresAccessToken(true);
         $response = $this->_get('/escolares/grupos/@estudiante', $params);
         return HttpHelper::getContent($response);
-    } 
+    }
 }

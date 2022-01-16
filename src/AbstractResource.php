@@ -41,9 +41,9 @@ abstract class AbstractResource
         string $path,
         array $params = [],
         $content = null,
-        string $mediaType = MediaTypes::APPLICATION_X_WWW_FORM_URLENCODED) : RequestInterface
-    {
-        $uri = $this->cliente->getApiEndpoint();
+        string $mediaType = MediaTypes::APPLICATION_X_WWW_FORM_URLENCODED
+    ): RequestInterface {
+        $uri = $this->cliente->getResourcesEndpoint();
         $uri = UriHelper::appendPath($uri, $path);
         if (!empty($params)) {
             $uri = UriHelper::withQueryParams($uri, $params);
@@ -55,7 +55,7 @@ abstract class AbstractResource
         $requestFactory = $this->cliente->getHttpFactoryManager()->getRequestFactory();
         $request = $requestFactory->createRequest($method, $uri);
         if ($this->requiresAccessToken) {
-            $request = $this->cliente->getOAuth2Client()->bindAccessToken($request);
+            $request = $this->cliente->getOAuth2Client()->bindOwnerAccessToken($request);
         } elseif ($this->requiresClientAccessToken) {
             $request = $this->cliente->getOAuth2Client()->bindClientAccessToken($request);
         }
@@ -71,9 +71,17 @@ abstract class AbstractResource
     {
         $response = $this->cliente->getHttpClient()->sendRequest($request);
         if (HttpHelper::isClientError($response)) {
-            throw new ClientErrorException($request, $response, "HTTP Client error: {$response->getStatusCode()}".print_r($response->getBody(), true));
+            throw new ClientErrorException(
+                $request,
+                $response,
+                "HTTP Client error: {$response->getStatusCode()}" . print_r($response->getBody(), true)
+            );
         } elseif (HttpHelper::isServerError($response)) {
-            throw new ServerErrorException($request, $response, "HTTP Server error: {$response->getStatusCode()}".print_r($response->getBody(), true));
+            throw new ServerErrorException(
+                $request,
+                $response,
+                "HTTP Server error: {$response->getStatusCode()}" . print_r($response->getBody(), true)
+            );
         }
         return $response;
     }
@@ -95,7 +103,7 @@ abstract class AbstractResource
         $request = $this->buildRequest(Methods::PUT, $path, [], $content, $mediaType);
         return $this->sendRequest($request);
     }
-    
+
     protected function _patch(string $path, $content, string $mediaType = MediaTypes::APPLICATION_X_WWW_FORM_URLENCODED)
     {
         $request = $this->buildRequest(Methods::PATCH, $path, [], $content, $mediaType);

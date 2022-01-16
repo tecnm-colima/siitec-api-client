@@ -3,14 +3,15 @@
 namespace ITColima\SiitecApi;
 
 use Fig\Http\Message\StatusCodeInterface;
-use Francerz\ApiClient\AbstractClient;
 use Francerz\Http\Client as HttpClient;
 use Francerz\Http\HttpFactory;
 use Francerz\Http\Server;
+use Francerz\Http\Uri;
 use Francerz\Http\Utils\HttpFactoryManager;
 use Francerz\Http\Utils\HttpHelper;
 use Francerz\Http\Utils\ServerInterface;
 use Francerz\Http\Utils\UriHelper;
+use Francerz\OAuth2\Client\OAuth2Client;
 use Francerz\OAuth2\ScopeHelper;
 use InvalidArgumentException;
 use ITColima\SiitecApi\Model\Perfil;
@@ -20,90 +21,31 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use RuntimeException;
 
-class SiitecApi extends AbstractClient
+class SiitecApi
 {
     public const SSL_MODE_DEFAULT = 0;
     public const SSL_MODE_DISABLED = 1;
     public const SSL_MODE_INTERNAL = 2;
+
+    private const ENV_RESOURCES_ENDPOINT = 'SIITEC_API_RESOURCES_ENDPOINT';
+    private const ENV_LOGOUT_ENDPOINT = 'SIITEC_API_LOGOUT_ENDPOINT';
+    private const ENV_PAGOS_URI = 'SIITEC_API_PAGOS_URL';
+    private const ENV_DOCENCIA_URI = 'SIITEC_API_DOCENCIA_URL';
+
+    private const SESSION_PERFIL_KEY = 'siitec.perfil';
+
+    public const QUERY_REDIR_PARAMETER = 'redir';
+
+    private $httpClient;
+    private $oauth2Client;
+    private $resourcesEndpoint;
 
     /** @var Perfil */
     private $perfil = null;
     private $httpHelper;
     private $loginHandlerUri = null;
 
-    public function __construct()
-    {
-        $httpFactory = new HttpFactoryManager(new HttpFactory());
-        $httpClient = new HttpClient();
-        $this->httpHelper = new HttpHelper($httpFactory);
-        parent::__construct($httpFactory, $httpClient);
-        $this->setSSLMode(self::SSL_MODE_DEFAULT);
-
-        $this->getOAuth2Client()->setAuthorizationEndpoint(SiitecApiConstants::AUTHORIZE_ENDPOINT);
-        $this->getOAuth2Client()->setTokenEndpoint(SiitecApiConstants::TOKEN_ENDPOINT);
-        $this->setApiEndpoint(SiitecApiConstants::API_ENDPOINT);
-
-        $this->setOwnerAccessTokenSessionKey('siitec.access_token');
-        $this->setClientAccessTokenSessionKey('siitec.client_access_token');
-
-        $this->loadDefaultAccessTokenHandlers();
-        $this->loadDefaultClientAccessTokenHandlers();
-
-        $this->loadOwnerAccessToken();
-        $this->loadClientAccessToken();
-        $this->loadConfigEnv();
-    }
-
-    private function loadConfigEnv()
-    {
-        // LEGACY KEYS
-        if (array_key_exists('SIITEC2_API_CLIENT_ID', $_ENV)) {
-            $this->setClientId($_ENV['SIITEC2_API_CLIENT_ID']);
-        }
-        if (array_key_exists('SIITEC2_API_CLIENT_SECRET', $_ENV)) {
-            $this->setClientSecret($_ENV['SIITEC2_API_CLIENT_SECRET']);
-        }
-        if (array_key_exists('SIITEC2_API_CLIENT_LOGOUT_URI', $_ENV)) {
-            $this->logoutUri = $_ENV['SIITEC2_API_CLIENT_LOGOUT_URI'];
-        }
-        if (array_key_exists('SIITEC2_API_AUTHORIZE_ENDPOINT', $_ENV)) {
-            $this->getOAuth2Client()->setAuthorizationEndpoint($_ENV['SIITEC2_API_AUTHORIZE_ENDPOINT']);
-        }
-        if (array_key_exists('SIITEC2_API_TOKEN_ENDPOINT', $_ENV)) {
-            $this->getOAuth2Client()->setTokenEndpoint($_ENV['SIITEC2_API_TOKEN_ENDPOINT']);
-        }
-        if (array_key_exists('SIITEC2_API_RESOURCE_ENDPOINT', $_ENV)) {
-            $this->setApiEndpoint($_ENV['SIITEC2_API_RESOURCE_ENDPOINT']);
-        }
-
-        # REQUIRED
-        if (array_key_exists('SIITEC_API_CLIENT_ID', $_ENV)) {
-            $this->setClientId($_ENV['SIITEC_API_CLIENT_ID']);
-        }
-        if (array_key_exists('SIITEC_API_CLIENT_SECRET', $_ENV)) {
-            $this->setClientSecret($_ENV['SIITEC_API_CLIENT_SECRET']);
-        }
-
-        # OPTIONAL
-        if (array_key_exists('SIITEC_API_LOGIN_HANDLER_URI', $_ENV)) {
-            $this->setLoginHandlerUri($_ENV['SIITEC_API_LOGIN_HANDLER_URI']);
-        }
-        if (array_key_exists('SIITEC_API_LOGOUT_URI', $_ENV)) {
-            $this->logoutUri = $_ENV['SIITEC_API_LOGOUT_URI'];
-        }
-
-        # DEBUGGING
-        if (array_key_exists('SIITEC_API_AUTHORIZE_ENDPOINT', $_ENV)) {
-            $this->getOAuth2Client()->setAuthorizationEndpoint($_ENV['SIITEC_API_AUTHORIZE_ENDPOINT']);
-        }
-        if (array_key_exists('SIITEC_API_TOKEN_ENDPOINT', $_ENV)) {
-            $this->getOAuth2Client()->setTokenEndpoint($_ENV['SIITEC_API_TOKEN_ENDPOINT']);
-        }
-        if (array_key_exists('SIITEC_API_RESOURCE_ENDPOINT', $_ENV)) {
-            $this->setApiEndpoint($_ENV['SIITEC_API_RESOURCE_ENDPOINT']);
-        }
-    }
-
+    #region STATIC METHODS
     public static function getPlatformUrl(string $url = ''): string
     {
         return SiitecApiConstants::PLATFORM_URL . '/' . ltrim($url, '/');
@@ -116,31 +58,31 @@ class SiitecApi extends AbstractClient
 
     public static function getPagosUrl(string $url = ''): string
     {
-        $retUrl = static::getPlatformUrl('/pagos/index.php');
-        if (array_key_exists('SIITEC_API_PAGOS_URL', $_ENV)) {
-            $retUrl = $_ENV['SIITEC_API_PAGOS_URL'];
+        static $pagosUrl = null;
+        if (is_null($pagosUrl)) {
+            $pagosUrl = array_key_exists(self::ENV_PAGOS_URI, $_ENV) ?
+                $_ENV[self::ENV_PAGOS_URI] :
+                self::getPlatformUrl('/pagos/index.php');
         }
+        $retUrl = $pagosUrl;
         $retUrl .= empty($url) ? '' : '/' . ltrim($url, '/');
         return $retUrl;
     }
 
     public static function getDocenciaUrl(string $url = ''): string
     {
-        $retUrl = static::getPlatformUrl('/docencia/index.php');
-        if (array_key_exists('SIITEC_API_DOCENCIA_URL', $_ENV)) {
-            $retUrl = $_ENV['SIITEC_API_DOCENCIA_URL'];
+        static $docenciaUrl = null;
+        if (is_null($docenciaUrl)) {
+            $docenciaUrl = array_key_exists(self::ENV_DOCENCIA_URI, $_ENV) ?
+                $_ENV[self::ENV_DOCENCIA_URI] :
+                self::getPlatformUrl('/docencia/index.php');
         }
+        $retUrl = $docenciaUrl;
         $retUrl .= empty($url) ? '' : '/' . ltrim($url, '/');
         return $retUrl;
     }
 
-    /**
-     * Shorthand to emit PSR-7 responses.
-     *
-     * @param ResponseInterface $response
-     * @return void
-     */
-    public static function emitResponse(ResponseInterface $response, ?ServerInterface $sever = null)
+    public static function emitResponse(ResponseInterface $response, ?ServerInterface $server = null)
     {
         $server = $server ?? Server::new();
         $server->emitResponse($response);
@@ -160,14 +102,66 @@ class SiitecApi extends AbstractClient
     {
         return UriHelper::getBaseUrl($path);
     }
+    #endregion
+
+    public function __construct()
+    {
+        $this->httpClient = new HttpClient();
+        $this->httpHelper = new HttpHelper(new HttpFactoryManager(new HttpFactory()));
+
+        $oauth2Client = new SiitecOAuth2Client();
+        $this->oauth2Client = new OAuth2Client(
+            $oauth2Client,
+            $this->httpClient,
+            $this->httpHelper->getHttpFactoryManager()->getRequestFactory(),
+            $oauth2Client,  // client saver
+            $oauth2Client,  // owner saver
+            $oauth2Client,  // state manager
+            $oauth2Client   // pkce manager
+        );
+        $this->init();
+    }
+
+    private function init()
+    {
+        $this->setSSLMode(self::SSL_MODE_DEFAULT);
+        $this->setResourcesEndpoint(new Uri(SiitecApiConstants::API_ENDPOINT));
+
+        if (array_key_exists(self::ENV_RESOURCES_ENDPOINT, $_ENV)) {
+            $this->setResourcesEndpoint(new Uri(self::ENV_RESOURCES_ENDPOINT));
+        }
+        if (array_key_exists(self::ENV_LOGOUT_ENDPOINT, $_ENV)) {
+            $this->logoutUri = new Uri($_ENV[self::ENV_LOGOUT_ENDPOINT]);
+        }
+    }
+
+    public function getHttpFactoryManager()
+    {
+        return $this->httpHelper->getHttpFactoryManager();
+    }
+
+    public function getHttpClient()
+    {
+        return $this->httpClient;
+    }
+
+    public function setResourcesEndpoint(UriInterface $resourcesEndpoint)
+    {
+        $this->resourcesEndpoint = $resourcesEndpoint;
+    }
+
+    public function getResourcesEndpoint(): UriInterface
+    {
+        return $this->resourcesEndpoint;
+    }
 
     public function setSSLMode($mode = self::SSL_MODE_DEFAULT)
     {
-        $httpClient = $this->getHttpClient();
-        if (!$httpClient instanceof HttpClient) {
+        if (!$this->httpClient instanceof HttpClient) {
             return;
         }
 
+        $httpClient = $this->httpClient;
         switch ($mode) {
             case self::SSL_MODE_DEFAULT:
                 $httpClient->setSSLCheck(true);
@@ -186,7 +180,7 @@ class SiitecApi extends AbstractClient
 
     public function getOAuth2Client()
     {
-        return parent::getOAuth2Client();
+        return $this->oauth2Client;
     }
 
     /**
@@ -198,85 +192,88 @@ class SiitecApi extends AbstractClient
      */
     public function redirectAuthUri($loginUri)
     {
-        return parent::makeAuthorizeRedirUri($loginUri);
+        return $this->goToLogin($loginUri);
+    }
+
+    /**
+     * Crea una URI para iniciar sesión en SIITEC y después regresar a la página
+     * actual una vez que el proceso se haya completado.
+     *
+     * @param string|UriInterface $loginUri
+     * @return UriInterface
+     */
+    public function goToLogin($loginUri)
+    {
+        $uriFactory = $this->httpHelper->getHttpFactoryManager()->getUriFactory();
+
+        if (is_string($loginUri)) {
+            $loginUri = $uriFactory->createUri($loginUri);
+        }
+
+        if (!$loginUri instanceof UriInterface) {
+            throw new InvalidArgumentException('Cannot convert login uri.');
+        }
+
+        $currentUri = UriHelper::getCurrent($uriFactory);
+        $loginUri = UriHelper::withQueryParam($loginUri, self::QUERY_REDIR_PARAMETER, (string)$currentUri);
+        return $loginUri;
     }
 
     /**
      * Adds 'redir' parameter from login to login_handler.
      *
-     * @param UriInterface $handlerUri
-     * @return void
-     */
-    protected function addFollowParameters(UriInterface $handlerUri)
-    {
-        $uriFactory = $this->getHttpFactoryManager()->getUriFactory();
-        $currentUri = UriHelper::getCurrent($uriFactory);
-        return UriHelper::copyQueryParams($currentUri, $handlerUri, ['redir']);
-    }
-
-    /**
-     * Retrieves OAuth 2.0 Authorization Code Uri adapted to given $scopes and $state
-     *
-     * @param array $scopes
-     * @param string $state
+     * @param UriInterface $authorizeUri
      * @return UriInterface
      */
-    public function getAuthCodeUri(array $scopes = [], string $state = ''): UriInterface
+    private function addFollowParameters(UriInterface $authorizeUri)
     {
-        $loginHandlerUri = $this->addFollowParameters($this->loginHandlerUri);
-        $scopes = ScopeHelper::merge($scopes, [SiitecUserScopes::GET_USUARIO_PERFIL_OWN]);
-        return parent::makeRequestAuthorizationCodeUri($loginHandlerUri, $scopes, $state);
+        $uriFactory = $this->httpHelper->getHttpFactoryManager()->getUriFactory();
+
+        $redirectUri = UriHelper::getQueryParam($authorizeUri, 'redirect_uri');
+        if (is_null($redirectUri)) {
+            return $authorizeUri;
+        }
+
+        $currentUri = UriHelper::getCurrent($uriFactory);
+        $redirectUri = $uriFactory->createUri($redirectUri);
+        $redirectUri = UriHelper::copyQueryParams($currentUri, $redirectUri, [self::QUERY_REDIR_PARAMETER]);
+
+        $authorizeUri = UriHelper::withQueryParam($authorizeUri, 'redirect_uri', $redirectUri);
+        return $authorizeUri;
     }
 
     /**
-     * Creates a Login Request and then is packed into a PSR-7 ResponseInterface
-     * object.
-     *
-     * @param array $scopes OAuth2 scopes
-     * @param string $state
-     * @return ResponseInterface
-     */
-    public function getLoginRequest(array $scopes = [], string $state = ''): ResponseInterface
-    {
-        $authCodeUri = $this->getAuthCodeUri($scopes, $state);
-        return $this->httpHelper->makeRedirect($authCodeUri);
-    }
-
-    /**
-     * @deprecated v0.1.7
-     * Deprecated in favor of SiitecApi::emitResponse()
-     *
-     * Creates a Login request and then emits.
+     * Creates OAuth 2.0 Authorization Code Request Uri with given $scopes.
      *
      * @param array $scopes
-     * @param string $state
-     * @param ServerInterface|null $server
-     * @return void
+     * @return UriInterface
      */
-    public function performLogin(array $scopes = [], string $state = '', ?ServerInterface $server = null)
+    private function createAuthorizationCodeUri(array $scopes = []): UriInterface
     {
-        $response = $this->getLoginRequest($scopes, $state);
-        $this->emitResponse($response);
+        $scopes = ScopeHelper::merge($scopes, [SiitecUserScopes::GET_USUARIO_PERFIL_OWN]);
+        $authorizeUri = $this->oauth2Client->createAuthorizationCodeUri($scopes);
+        $authorizeUri = $this->addFollowParameters($authorizeUri);
+        return $authorizeUri;
     }
 
-    public function setLoginHandlerUri($uri)
+    /**
+     * Inicia proceso de inicio de sesión en SIITEC.
+     *
+     * @param string|UriInterface $callbackUri
+     * @param string|UriInterface $logoutUri
+     * @param string[]|string $scopes
+     * @param bool $autoEmit
+     * @return UriInterface
+     */
+    public function login($callbackUri, $logoutUri, $scopes = [], $autoEmit = false)
     {
-        if (is_string($uri)) {
-            $uriFactory = $this->getHttpFactoryManager()->getUriFactory();
-            $uri = $uriFactory->createUri($uri);
-        }
-        $this->loginHandlerUri = $uri;
-    }
+        $uriFactory = $this->httpHelper->getHttpFactoryManager()->getUriFactory();
 
-    public function login($handlerUri, $logoutUri, array $scopes = [], string $state = '')
-    {
-        $uriFactory = $this->getHttpFactoryManager()->getUriFactory();
-
-        if (is_string($handlerUri)) {
-            $handlerUri = $uriFactory->createUri($handlerUri);
+        if (is_string($callbackUri)) {
+            $callbackUri = $uriFactory->createUri($callbackUri);
         }
-        if (!$handlerUri instanceof UriInterface) {
-            throw new InvalidArgumentException('Invalid $handlerUri.');
+        if (!$callbackUri instanceof UriInterface) {
+            throw new InvalidArgumentException('Invalid $callbackUri.');
         }
 
         if (is_string($logoutUri)) {
@@ -286,24 +283,31 @@ class SiitecApi extends AbstractClient
             throw new InvalidArgumentException('Invalid $logoutUri.');
         }
 
-        $handlerUri = $this->addFollowParameters($handlerUri);
         $scopes = ScopeHelper::merge($scopes, [SiitecUserScopes::GET_USUARIO_PERFIL_OWN]);
-        $uri = parent::makeRequestAuthorizationCodeUri($handlerUri, $scopes, $state);
+        $uri = $this->createAuthorizationCodeUri($scopes);
 
         $uri = UriHelper::withQueryParam($uri, 'logout', $logoutUri);
 
-        return $this->httpHelper->makeRedirect($uri);
+        if ($autoEmit) {
+            $redirect = $this->httpHelper->makeRedirect($uri);
+            self::emitResponse($redirect);
+        }
+
+        return $uri;
     }
 
     public function handleLogin(?ServerRequestInterface $request = null)
     {
-        $at = parent::handleAuthorizeResponse($request);
-
-        if (isset($at)) {
-            $this->retrievePerfil();
+        if (is_null($request)) {
+            $request = $this->httpHelper->getCurrentRequest();
         }
+        $this->oauth2Client->handleCallback($request);
+        $this->retrievePerfil();
 
-        return $at;
+        $uriFactory = $this->httpHelper->getHttpFactoryManager()->getUriFactory();
+        $redirUri = $this->getRedir(UriHelper::getSiteUrl());
+        $redirUri = $uriFactory->createUri($redirUri);
+        return $redirUri;
     }
 
     #region Perfil (ResourceOwner)
@@ -315,21 +319,20 @@ class SiitecApi extends AbstractClient
             $perfil = is_string($perfil) ? $perfil : print_r($perfil);
             throw new RuntimeException("Failed retrieving perfil from API. {$perfil}");
         }
-        $this->perfil = $_SESSION['siitec.perfil'] = $perfil;
+        $this->perfil = $_SESSION[self::SESSION_PERFIL_KEY] = $perfil;
     }
 
     private function loadPerfilFromSession()
     {
-        $s2pk = 'siitec.perfil';
-        if (array_key_exists($s2pk, $_SESSION) && is_object($_SESSION[$s2pk])) {
-            $this->perfil = $_SESSION[$s2pk];
+        if (array_key_exists(self::SESSION_PERFIL_KEY, $_SESSION) && is_object($_SESSION[self::SESSION_PERFIL_KEY])) {
+            $this->perfil = $_SESSION[self::SESSION_PERFIL_KEY];
         }
     }
 
     private function unsetPerfil()
     {
         unset($this->perfil);
-        unset($_SESSION['siitec.perfil']);
+        unset($_SESSION[self::SESSION_PERFIL_KEY]);
     }
 
     public function getPerfil()
@@ -359,7 +362,7 @@ class SiitecApi extends AbstractClient
     public function revoke()
     {
         $this->unsetPerfil();
-        $this->revokeOwnerAcccessToken();
+        // $this->revokeOwnerAcccessToken();
     }
 
     /**
@@ -371,12 +374,47 @@ class SiitecApi extends AbstractClient
     {
         $this->revoke();
 
-        $currentUri = UriHelper::getCurrent($this->getHttpFactoryManager()->getUriFactory());
+        $currentUri = UriHelper::getCurrent($this->httpHelper->getHttpFactoryManager()->getUriFactory());
         $continue = UriHelper::getQueryParam($currentUri, 'continue');
 
         if (!empty($continue)) {
             return $this->httpHelper->makeRedirect($continue);
         }
         return $this->httpHelper->makeRedirect(static::getPlatformUrl());
+    }
+
+    private function createLogoutResponse()
+    {
+        $request = $this->httpHelper->getCurrentRequest();
+        $currentUri = $request->getUri();
+        $continue = UriHelper::getQueryParam($currentUri, 'continue');
+        if (empty($continue)) {
+            return $this->httpHelper->makeRedirect(static::getPlatformUrl());
+        }
+        return $this->httpHelper->makeRedirect($continue);
+    }
+
+    public function logout($autoEmit = false)
+    {
+        $response = $this->createLogoutResponse();
+        if ($autoEmit) {
+            self::emitResponse($response);
+        }
+        return $response;
+    }
+
+    /**
+     * @param string $defaultUri
+     * @return string
+     */
+    public function getRedir(string $defaultUri)
+    {
+        $uriFactory = $this->httpHelper->getHttpFactoryManager()->getUriFactory();
+        $currentUri = UriHelper::getCurrent($uriFactory);
+        $redirUri = UriHelper::getQueryParam($currentUri, self::QUERY_REDIR_PARAMETER);
+        if (UriHelper::isValid($redirUri)) {
+            return $redirUri;
+        }
+        return $defaultUri;
     }
 }
