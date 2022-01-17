@@ -130,7 +130,7 @@ class SiitecApi
         $this->setResourcesEndpoint(new Uri(SiitecApiConstants::API_ENDPOINT));
 
         if (array_key_exists(self::ENV_RESOURCES_ENDPOINT, $_ENV)) {
-            $this->setResourcesEndpoint(new Uri(self::ENV_RESOURCES_ENDPOINT));
+            $this->setResourcesEndpoint(new Uri($_ENV[self::ENV_RESOURCES_ENDPOINT]));
         }
         if (array_key_exists(self::ENV_LOGOUT_ENDPOINT, $_ENV)) {
             $this->logoutUri = new Uri($_ENV[self::ENV_LOGOUT_ENDPOINT]);
