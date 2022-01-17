@@ -1,14 +1,13 @@
 {
     "name": "itcolima/siitec-api-client",
     "description": "PHP ITColima SIITEC API Client",
-    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "ITColima\\SiitecApi\\" : "src"
         }
     },
     "require": {
-        "francerz/oauth2-client": "dev-master",
+        "francerz/oauth2-client": "^0.3",
         "psr/http-client": "^1.0",
         "francerz/http": "^0.3"
     },
