@@ -33,6 +33,7 @@ class SiitecApi
     private const ENV_DOCENCIA_URI = 'SIITEC_API_DOCENCIA_URL';
 
     private const SESSION_PERFIL_KEY = 'siitec.perfil';
+    private const SESSION_CALLBACK_KEY = 'siitec.oauth2Callback';
 
     public const QUERY_REDIR_PARAMETER = 'redir';
 
@@ -276,6 +277,7 @@ class SiitecApi
         if (!$callbackUri instanceof UriInterface) {
             throw new InvalidArgumentException('Invalid $callbackUri.');
         }
+        $_SESSION[self::SESSION_CALLBACK_KEY] = $callbackUri;
         $this->oauth2ClientParams->setCallbackEndpoint($callbackUri);
 
         if (is_string($logoutUri)) {
@@ -298,6 +300,7 @@ class SiitecApi
         if (is_null($request)) {
             $request = $this->httpHelper->getCurrentRequest();
         }
+        $this->oauth2ClientParams->setCallbackEndpoint($_SESSION[self::SESSION_CALLBACK_KEY] ?? null);
         $this->oauth2Client->handleCallback($request);
         $this->retrievePerfil();
 
