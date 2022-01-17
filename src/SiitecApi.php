@@ -277,7 +277,6 @@ class SiitecApi
         if (!$callbackUri instanceof UriInterface) {
             throw new InvalidArgumentException('Invalid $callbackUri.');
         }
-        $_SESSION[self::SESSION_CALLBACK_KEY] = $callbackUri;
         $this->oauth2ClientParams->setCallbackEndpoint($callbackUri);
 
         if (is_string($logoutUri)) {
@@ -292,15 +291,22 @@ class SiitecApi
 
         $uri = UriHelper::withQueryParam($uri, 'logout', $logoutUri);
 
+        $_SESSION[self::SESSION_CALLBACK_KEY] = UriHelper::getQueryParam($uri, 'redirect_uri');
         return $this->httpHelper->makeRedirect($uri);
     }
 
     public function handleLogin(?ServerRequestInterface $request = null)
     {
+        $uriFactory = $this->getHttpFactoryManager()->getUriFactory();
+
         if (is_null($request)) {
             $request = $this->httpHelper->getCurrentRequest();
         }
-        $this->oauth2ClientParams->setCallbackEndpoint($_SESSION[self::SESSION_CALLBACK_KEY] ?? null);
+        if (!empty($_SESSION[self::SESSION_CALLBACK_KEY])) {
+            $this->oauth2ClientParams->setCallbackEndpoint(
+                $uriFactory->createUri($_SESSION[self::SESSION_CALLBACK_KEY])
+            );
+        }
         $this->oauth2Client->handleCallback($request);
         $this->retrievePerfil();
 
