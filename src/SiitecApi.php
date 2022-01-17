@@ -2,6 +2,7 @@
 
 namespace ITColima\SiitecApi;
 
+use Exception;
 use Fig\Http\Message\StatusCodeInterface;
 use Francerz\Http\Client as HttpClient;
 use Francerz\Http\HttpFactory;
@@ -108,6 +109,8 @@ class SiitecApi
 
     public function __construct()
     {
+        $this->initSessions();
+        
         $this->httpClient = new HttpClient();
         $this->httpHelper = new HttpHelper(new HttpFactoryManager(new HttpFactory()));
 
@@ -134,6 +137,17 @@ class SiitecApi
         }
         if (array_key_exists(self::ENV_LOGOUT_ENDPOINT, $_ENV)) {
             $this->logoutUri = new Uri($_ENV[self::ENV_LOGOUT_ENDPOINT]);
+        }
+    }
+
+    private function initSessions()
+    {
+        switch (session_status()) {
+            case PHP_SESSION_DISABLED:
+                throw new Exception('Cannot start bceause Sessions are disabled.');
+            case PHP_SESSION_NONE:
+                session_start();
+                break;
         }
     }
 
