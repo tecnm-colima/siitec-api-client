@@ -110,7 +110,7 @@ class SiitecApi
     public function __construct()
     {
         $this->initSessions();
-        
+
         $this->httpClient = new HttpClient();
         $this->httpHelper = new HttpHelper(new HttpFactoryManager(new HttpFactory()));
 
@@ -146,7 +146,9 @@ class SiitecApi
             case PHP_SESSION_DISABLED:
                 throw new Exception('Cannot start bceause Sessions are disabled.');
             case PHP_SESSION_NONE:
-                session_start();
+                if (!headers_sent()) {
+                    session_start();
+                }
                 break;
         }
     }
