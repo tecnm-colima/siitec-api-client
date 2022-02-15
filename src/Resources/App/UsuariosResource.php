@@ -2,8 +2,10 @@
 
 namespace ITColima\SiitecApi\Resources\App;
 
+use Francerz\Http\Utils\Constants\MediaTypes;
 use Francerz\Http\Utils\HttpHelper;
 use ITColima\SiitecApi\AbstractResource;
+use ITColima\SiitecApi\Model\App\Usuarios\Aspirante;
 use ITColima\SiitecApi\Model\Perfil;
 
 class UsuariosResource extends AbstractResource
@@ -72,11 +74,18 @@ class UsuariosResource extends AbstractResource
      * @param array $params
      * @return Perfil[]
      */
-    public function findCurp($curp, array $params = []) 
+    public function findCurp($curp, array $params = [])
     {
         $this->requiresClientAccessToken(true);
         $params['curp'] = $curp;
         $response = $this->_get('/app/usuarios', $params);
+        return HttpHelper::getContent($response);
+    }
+
+    public function createAspirante(Aspirante $aspirante)
+    {
+        $this->requiresClientAccessToken(true);
+        $response = $this->_post('/app/usuarios/aspirantes', $aspirante, MediaTypes::APPLICATION_JSON);
         return HttpHelper::getContent($response);
     }
 }
