@@ -114,5 +114,5 @@ mismas que pueden modificarse para depuración y ejecución con entonos locales.
 ```env
 SIITEC_API_AUTHORIZE_ENDPOINT = 'https://siitec.colima.tecnm.mx/index.php/oauth2/authorize'
 SIITEC_API_TOKEN_ENDPOINT = 'https://siitec.colima.tecnm.mx/index.php/oauth2/token'
-SIITEC_API_RESOURCE_ENDPOINT = 'https://siitec.colima.tecnm.mx/api/index.php'
+SIITEC_API_RESOURCES_ENDPOINT = 'https://siitec.colima.tecnm.mx/api/index.php'
 ```
