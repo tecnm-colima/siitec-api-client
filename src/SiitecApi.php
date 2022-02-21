@@ -48,6 +48,9 @@ class SiitecApi
     private $httpHelper;
     private $loginHandlerUri = null;
 
+    private $sessionPerfilKey = self::SESSION_PERFIL_KEY;
+    private $sessionCallbackKey = self::SESSION_CALLBACK_KEY;
+
     #region STATIC METHODS
     public static function getPlatformUrl(string $url = ''): string
     {
@@ -124,6 +127,8 @@ class SiitecApi
             $this->oauth2ClientParams,  // state manager
             $this->oauth2ClientParams   // pkce manager
         );
+        $this->sessionPerfilKey = self::SESSION_PERFIL_KEY . '@' . $this->oauth2Client->getClientId();
+        $this->sessionCallbackKey = self::SESSION_CALLBACK_KEY . '@' . $this->oauth2Client->getClientId();
         $this->init();
     }
 
@@ -307,7 +312,7 @@ class SiitecApi
 
         $uri = UriHelper::withQueryParam($uri, 'logout', $logoutUri);
 
-        $_SESSION[self::SESSION_CALLBACK_KEY] = UriHelper::getQueryParam($uri, 'redirect_uri');
+        $_SESSION[$this->sessionCallbackKey] = UriHelper::getQueryParam($uri, 'redirect_uri');
         return $this->httpHelper->makeRedirect($uri);
     }
 
@@ -318,9 +323,9 @@ class SiitecApi
         if (is_null($request)) {
             $request = $this->httpHelper->getCurrentRequest();
         }
-        if (!empty($_SESSION[self::SESSION_CALLBACK_KEY])) {
+        if (!empty($_SESSION[$this->sessionCallbackKey])) {
             $this->oauth2ClientParams->setCallbackEndpoint(
-                $uriFactory->createUri($_SESSION[self::SESSION_CALLBACK_KEY])
+                $uriFactory->createUri($_SESSION[$this->sessionCallbackKey])
             );
         }
         $this->oauth2Client->handleCallback($request);
@@ -341,20 +346,20 @@ class SiitecApi
             $perfil = is_string($perfil) ? $perfil : print_r($perfil);
             throw new RuntimeException("Failed retrieving perfil from API. {$perfil}");
         }
-        $this->perfil = $_SESSION[self::SESSION_PERFIL_KEY] = $perfil;
+        $this->perfil = $_SESSION[$this->sessionPerfilKey] = $perfil;
     }
 
     private function loadPerfilFromSession()
     {
-        if (array_key_exists(self::SESSION_PERFIL_KEY, $_SESSION) && is_object($_SESSION[self::SESSION_PERFIL_KEY])) {
-            $this->perfil = $_SESSION[self::SESSION_PERFIL_KEY];
+        if (array_key_exists($this->sessionPerfilKey, $_SESSION) && is_object($_SESSION[$this->sessionPerfilKey])) {
+            $this->perfil = $_SESSION[$this->sessionPerfilKey];
         }
     }
 
     private function unsetPerfil()
     {
         unset($this->perfil);
-        unset($_SESSION[self::SESSION_PERFIL_KEY]);
+        unset($_SESSION[$this->sessionPerfilKey]);
     }
 
     public function getPerfil()

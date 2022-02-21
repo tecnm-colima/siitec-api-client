@@ -82,6 +82,10 @@ class UsuariosResource extends AbstractResource
         return HttpHelper::getContent($response);
     }
 
+    /**
+     * @param Aspirante $aspirante
+     * @return Aspirante
+     */
     public function createAspirante(Aspirante $aspirante)
     {
         $this->requiresClientAccessToken(true);
