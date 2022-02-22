@@ -41,6 +41,11 @@ class SiitecOAuth2Client implements
     private $tokenEndpoint;
     private $callbackEndpoint;
 
+    private $keyClientAccessToken = self::KEY_CLIENT_ACCESS_TOKEN;
+    private $keyOwnerAccessToken = self::KEY_OWNER_ACCESS_TOKEN;
+    private $keyState = self::KEY_STATE;
+    private $keyPkce = self::KEY_PKCE;
+
     public function __construct()
     {
         $this->init();
@@ -66,6 +71,11 @@ class SiitecOAuth2Client implements
         if (array_key_exists(self::ENV_CALLBACK_ENDPOINT, $_ENV)) {
             $this->callbackEndpoint = new Uri($_ENV[self::ENV_CALLBACK_ENDPOINT]);
         }
+
+        $this->keyClientAccessToken = self::KEY_CLIENT_ACCESS_TOKEN . '@' . $this->clientId;
+        $this->keyOwnerAccessToken = self::KEY_OWNER_ACCESS_TOKEN . '@' . $this->clientId;
+        $this->keyState = self::KEY_STATE . '@' . $this->clientId;
+        $this->keyPkce = self::KEY_PKCE . '@' . $this->keyPkce;
     }
 
     public function getClientId(): string
@@ -100,34 +110,34 @@ class SiitecOAuth2Client implements
 
     public function loadClientAccessToken(): ?AccessToken
     {
-        return $_SESSION[self::KEY_CLIENT_ACCESS_TOKEN] ?? null;
+        return $_SESSION[$this->keyClientAccessToken] ?? null;
     }
 
     public function saveClientAccessToken(AccessToken $accessToken)
     {
-        $_SESSION[self::KEY_CLIENT_ACCESS_TOKEN] = $accessToken;
+        $_SESSION[$this->keyClientAccessToken] = $accessToken;
     }
 
     public function loadOwnerAccessToken(): ?AccessToken
     {
-        return $_SESSION[self::KEY_OWNER_ACCESS_TOKEN] ?? null;
+        return $_SESSION[$this->keyOwnerAccessToken] ?? null;
     }
 
     public function saveOwnerAccessToken(AccessToken $accessToken)
     {
-        $_SESSION[self::KEY_OWNER_ACCESS_TOKEN] = $accessToken;
+        $_SESSION[$this->keyOwnerAccessToken] = $accessToken;
     }
 
     public function generateState(): string
     {
         $state = PKCEHelper::generateCode(8);
-        $_SESSION[self::KEY_STATE] = $state;
+        $_SESSION[$this->keyState] = $state;
         return $state;
     }
 
     public function getState(): ?string
     {
-        return $_SESSION[self::KEY_STATE] ?? null;
+        return $_SESSION[$this->keyState] ?? null;
     }
 
     public function generatePKCECode(): PKCECode
@@ -136,12 +146,12 @@ class SiitecOAuth2Client implements
             PKCEHelper::generateCode(),
             CodeChallengeMethodsEnum::SHA256
         );
-        $_SESSION[self::KEY_PKCE] = $pkceCode;
+        $_SESSION[$this->keyPkce] = $pkceCode;
         return $pkceCode;
     }
 
     public function getPKCECode(): ?PKCECode
     {
-        return $_SESSION[self::KEY_PKCE] ?? null;
+        return $_SESSION[$this->keyPkce] ?? null;
     }
 }
