@@ -285,10 +285,10 @@ class SiitecApi
      * @param string|UriInterface $callbackUri
      * @param string|UriInterface $logoutUri
      * @param string[]|string $scopes
-     * @param string|null $state
+     * @param string|null $usuario
      * @return ResponseInterface
      */
-    public function login($callbackUri, $logoutUri, $scopes = [], $state = null)
+    public function login($callbackUri, $logoutUri, $scopes = [], $usuario = null)
     {
         $uriFactory = $this->httpHelper->getHttpFactoryManager()->getUriFactory();
 
@@ -311,6 +311,9 @@ class SiitecApi
         $uri = $this->createAuthorizationCodeUri($scopes);
 
         $uri = UriHelper::withQueryParam($uri, 'logout', $logoutUri);
+        if (!empty($usuario)) {
+            $uri = UriHelper::withQueryParam($uri, 'usuario', $usuario);
+        }
 
         $_SESSION[$this->sessionCallbackKey] = UriHelper::getQueryParam($uri, 'redirect_uri');
         return $this->httpHelper->makeRedirect($uri);
