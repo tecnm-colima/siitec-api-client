@@ -11,6 +11,7 @@ class Email implements JsonSerializable
     private $to = [];
     private $cc = [];
     private $bcc = [];
+    private $replyTo = [];
     private $contentType = 'text/plain';
     private $charset = null;
     private $subject = '';
@@ -23,6 +24,7 @@ class Email implements JsonSerializable
         $email->to = is_object($content->to) || is_array($content->to) ? (array)$content->to : [];
         $email->cc = is_object($content->cc) || is_array($content->cc) ? (array)$content->cc : [];
         $email->bcc = is_object($content->bcc) || is_array($content->bcc) ? (array)$content->bcc : [];
+        $email->replyTo = is_object($content->replyTo) || is_array($content->replyTo) ? (array)$content->replyTo : [];
         $email->contentType = is_string($content->contentType) ? $content->contentType : 'text/plain';
         $email->charset = is_string($content->charset) ? $content->charset : null;
         $email->subject = is_string($content->subject) ? $content->subject : '';
@@ -36,6 +38,7 @@ class Email implements JsonSerializable
             'to' => $this->to,
             'cc' => $this->cc,
             'bcc' => $this->bcc,
+            'replyTo' => $this->replyTo,
             'contentType' => $this->contentType,
             'charset' => $this->charset,
             'subject' => $this->subject,
@@ -83,6 +86,20 @@ class Email implements JsonSerializable
     public function getBcc()
     {
         return $this->bcc;
+    }
+
+    public function addReplyTo(string $address, ?string $name = null)
+    {
+        if (isset($name)) {
+            $this->replyTo[$address] = $name;
+        } else {
+            $this->replyTo[] = $address;
+        }
+    }
+
+    public function getReplyTo()
+    {
+        return $this->replyTo;
     }
 
     public function setContentType(string $contentType)
