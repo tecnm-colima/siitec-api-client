@@ -18,6 +18,7 @@ class Aspirante implements JsonSerializable
     public $nombres;
     public $apellido1;
     public $apellido2;
+    public $curp;
 
     // usuarios_correos
     public $correo;
@@ -34,6 +35,7 @@ class Aspirante implements JsonSerializable
         $aspirante->nombres = $data->nombres ?? null;
         $aspirante->apellido1 = $data->apellido1 ?? null;
         $aspirante->apellido2 = $data->apellido2 ?? null;
+        $aspirante->curp = $data->curp ?? null;
         $aspirante->correo = $data->correo ?? null;
         $aspirante->correo_verify = $data->correo_verify ?? null;
         return $aspirante;
@@ -49,6 +51,7 @@ class Aspirante implements JsonSerializable
             'nombres' => $this->nombres,
             'apellido1' => $this->apellido1,
             'apellido2' => $this->apellido2,
+            'curp' => $this->curp,
             'correo' => $this->correo,
             'correo_verify' => $this->correo_verify
         ];
