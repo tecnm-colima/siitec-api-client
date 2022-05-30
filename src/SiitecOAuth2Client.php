@@ -143,7 +143,7 @@ class SiitecOAuth2Client implements
     public function generatePKCECode(): PKCECode
     {
         $pkceCode = new PKCECode(
-            PKCEHelper::generateCode(),
+            PKCEHelper::generateCode(64),
             CodeChallengeMethodsEnum::SHA256
         );
         $_SESSION[$this->keyPkce] = $pkceCode;
