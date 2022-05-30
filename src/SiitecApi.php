@@ -413,7 +413,7 @@ class SiitecApi
         if (!empty($continue)) {
             return $this->httpHelper->makeRedirect($continue);
         }
-        return $this->httpHelper->makeRedirect(static::getPlatformUrl('/usuarios/logout'));
+        return $this->httpHelper->makeRedirect(static::getPlatformUrl('/index.php/usuarios/logout'));
     }
 
     /**
