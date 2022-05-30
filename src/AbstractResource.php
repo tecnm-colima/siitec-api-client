@@ -2,6 +2,7 @@
 
 namespace ITColima\SiitecApi;
 
+use Fig\Http\Message\RequestMethodInterface;
 use Francerz\Http\Utils\Constants\MediaTypes;
 use Francerz\Http\Utils\Constants\Methods;
 use Francerz\Http\Utils\Exceptions\ClientErrorException;
@@ -88,31 +89,31 @@ abstract class AbstractResource
 
     protected function _get(string $path, array $params = [])
     {
-        $request = $this->buildRequest(Methods::GET, $path, $params);
+        $request = $this->buildRequest(RequestMethodInterface::METHOD_GET, $path, $params);
         return $this->sendRequest($request);
     }
 
     protected function _post(string $path, $content, string $mediaType = MediaTypes::APPLICATION_X_WWW_FORM_URLENCODED)
     {
-        $request = $this->buildRequest(Methods::POST, $path, [], $content, $mediaType);
+        $request = $this->buildRequest(RequestMethodInterface::METHOD_POST, $path, [], $content, $mediaType);
         return $this->sendRequest($request);
     }
 
     protected function _put(string $path, $content, string $mediaType = MediaTypes::APPLICATION_X_WWW_FORM_URLENCODED)
     {
-        $request = $this->buildRequest(Methods::PUT, $path, [], $content, $mediaType);
+        $request = $this->buildRequest(RequestMethodInterface::METHOD_PUT, $path, [], $content, $mediaType);
         return $this->sendRequest($request);
     }
 
     protected function _patch(string $path, $content, string $mediaType = MediaTypes::APPLICATION_X_WWW_FORM_URLENCODED)
     {
-        $request = $this->buildRequest(Methods::PATCH, $path, [], $content, $mediaType);
+        $request = $this->buildRequest(RequestMethodInterface::METHOD_PATCH, $path, [], $content, $mediaType);
         return $this->sendRequest($request);
     }
 
     protected function _delete(string $path)
     {
-        $request = $this->buildRequest(Methods::DELETE, $path);
+        $request = $this->buildRequest(RequestMethodInterface::METHOD_DELETE, $path);
         return $this->sendRequest($request);
     }
 }
