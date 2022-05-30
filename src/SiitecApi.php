@@ -397,20 +397,23 @@ class SiitecApi
 
     /**
      * Handles direct logout.
+     * 
+     * @param ServerRequestInterface|null $request
      *
      * @return ResponseInterface
      */
-    public function handleLogout(): ResponseInterface
+    public function handleLogout(?ServerRequestInterface $request = null): ResponseInterface
     {
+        $request = $request ?? $this->httpHelper->getCurrentRequest();
         $this->revoke();
 
-        $currentUri = UriHelper::getCurrent($this->httpHelper->getHttpFactoryManager()->getUriFactory());
+        $currentUri = $request->getUri();
         $continue = UriHelper::getQueryParam($currentUri, 'continue');
 
         if (!empty($continue)) {
             return $this->httpHelper->makeRedirect($continue);
         }
-        return $this->httpHelper->makeRedirect(static::getPlatformUrl());
+        return $this->httpHelper->makeRedirect(static::getPlatformUrl('/usuarios/logout'));
     }
 
     /**
