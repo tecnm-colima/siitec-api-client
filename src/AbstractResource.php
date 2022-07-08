@@ -9,6 +9,7 @@ use Francerz\Http\Utils\Exceptions\ClientErrorException;
 use Francerz\Http\Utils\Exceptions\ServerErrorException;
 use Francerz\Http\Utils\HttpHelper;
 use Francerz\Http\Utils\UriHelper;
+use Francerz\PowerData\Objects;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -115,5 +116,19 @@ abstract class AbstractResource
     {
         $request = $this->buildRequest(RequestMethodInterface::METHOD_DELETE, $path);
         return $this->sendRequest($request);
+    }
+
+    protected function cast(object $obj, string $className)
+    {
+        return Objects::cast($obj, $className);
+    }
+
+    protected function castArray(array $data, string $className)
+    {
+        $objs = [];
+        foreach ($data as $k => $obj) {
+            $objs[$k] = Objects::cast($obj, $className);
+        }
+        return $objs;
     }
 }

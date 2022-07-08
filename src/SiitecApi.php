@@ -397,7 +397,7 @@ class SiitecApi
 
     /**
      * Handles direct logout.
-     * 
+     *
      * @param ServerRequestInterface|null $request
      *
      * @return ResponseInterface
