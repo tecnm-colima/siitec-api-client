@@ -4,6 +4,7 @@ namespace ITColima\SiitecApi\Resources\Escolares;
 
 use Francerz\Http\Utils\HttpHelper;
 use ITColima\SiitecApi\AbstractResource;
+use ITColima\SiitecApi\Model\Escolares\Carrera;
 
 class CarrerasResource extends AbstractResource
 {
@@ -11,22 +12,33 @@ class CarrerasResource extends AbstractResource
      * Obtiene un listado de carreras disponibles en el sistema.
      *
      * @param array $params
-     * @return array
+     * @return Carrera[]
      */
     public function getAll(array $params = [])
     {
         $this->requiresAccessToken(false);
         $response = $this->_get('/escolares/carreras', $params);
-        return HttpHelper::getContent($response);
+        $data = HttpHelper::getContent($response);
+        return $this->castArray($data, Carrera::class);
     }
 
+    /**
+     * Obtiene una carrera a partir de su ID.
+     *
+     * @param int|string $carrera_id
+     * @param array $params
+     * @return Carrera
+     */
     public function getById($carrera_id, array $params = [])
     {
+        $this->requiresAccessToken(false);
         if (is_array($carrera_id)) {
             $carrera_id = join('+', $carrera_id);
         }
-        $this->requiresAccessToken(false);
         $response = $this->_get("/escolares/carreras/{$carrera_id}", $params);
-        return HttpHelper::getContent($response);
+        $data = HttpHelper::getContent($response);
+        return is_array($carrera_id) ?
+            $this->castArray($data, Carrera::class) :
+            $this->cast($data, Carrera::class);
     }
 }
