@@ -19,4 +19,10 @@ class ProcesosResource extends AbstractResource
         }
         return $rows;
     }
+
+    public function getById($id_proceso, array $params = [])
+    {
+        $response = $this->_get("/pagos/procesos/{$id_proceso}", $params);
+        return HttpHelper::getContent($response);
+    }
 }
