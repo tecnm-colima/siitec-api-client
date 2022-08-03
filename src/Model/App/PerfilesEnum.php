@@ -19,7 +19,7 @@ class PerfilesEnum extends AbstractEnum
     public const ID_JEFATURA_ACADEMICA = 9;
     public const ID_JEFATURA_ADMINISTRATIVA = 21;
     public const ID_JEFATURA_DIFUSION = 20;
-    public const ID_JEFATURA_CENTRO_INF = 52;
+    public const ID_JEFATURA_CENTRO_INFORMACION = 52;
     public const ID_JEFATURA_DESARROLLO_ACADEMICO = 15;
     public const ID_JEFATURA_DIVISION_ESTUDIOS = 14;
     public const ID_JEFATURA_VINCULACION = 43;
