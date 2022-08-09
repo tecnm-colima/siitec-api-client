@@ -43,6 +43,12 @@ class EstudianteDocumento implements JsonSerializable
 
     public function writeFile($filepath)
     {
+        $dirpath = dirname($filepath);
+        if (!file_exists($dirpath) || !is_dir($dirpath)) {
+            mkdir($dirpath, 0664, true);
+        }
+
+
         $f = fopen($filepath, 'w+');
         if ($f === false) {
             throw new RuntimeException("Failed opening file '{$filepath}'.");
