@@ -4,8 +4,10 @@ namespace ITColima\SiitecApi\Resources\Escolares;
 
 use Francerz\Http\Utils\Constants\MediaTypes;
 use Francerz\Http\Utils\HttpHelper;
+use Francerz\PowerData\Objects;
 use InvalidArgumentException;
 use ITColima\SiitecApi\AbstractResource;
+use ITColima\SiitecApi\Model\Escolares\AspiranteInscrito;
 use ITColima\SiitecApi\Model\Escolares\Estudiante;
 use ITColima\SiitecApi\Model\Escolares\Inscripcion;
 use ITColima\SiitecApi\Model\Escolares\InscripcionAspirante;
@@ -35,6 +37,7 @@ class InscripcionesResource extends AbstractResource
     /**
      * @param int|string $periodo_id
      * @param Estudiante[] $estudiantes
+     * @return AspiranteInscrito[]
      */
     public function inscribirBatch($periodo_id, array $estudiantes)
     {
@@ -53,6 +56,11 @@ class InscripcionesResource extends AbstractResource
             $estudiantes,
             MediaTypes::APPLICATION_JSON
         );
-        return HttpHelper::getContent($response);
+        $rows = HttpHelper::getContent($response);
+        $inscritos = [];
+        foreach ($rows as $row) {
+            $inscritos[] = Objects::cast($row, AspiranteInscrito::class);
+        }
+        return $inscritos;
     }
 }
