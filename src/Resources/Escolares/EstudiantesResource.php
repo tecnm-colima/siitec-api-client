@@ -2,8 +2,10 @@
 
 namespace ITColima\SiitecApi\Resources\Escolares;
 
+use Francerz\Http\Utils\Constants\MediaTypes;
 use Francerz\Http\Utils\HttpHelper;
 use ITColima\SiitecApi\AbstractResource;
+use ITColima\SiitecApi\Model\Escolares\EstudianteDocumento;
 
 class EstudiantesResource extends AbstractResource
 {
@@ -34,7 +36,7 @@ class EstudiantesResource extends AbstractResource
         return reset($output);
     }
 
-    public function getById($id, array $params=[])
+    public function getById($id, array $params = [])
     {
         $this->requiresClientAccessToken();
         $id = is_array($id) ? implode('+', $id) : $id;
@@ -46,7 +48,7 @@ class EstudiantesResource extends AbstractResource
         return reset($output);
     }
 
-    public function getByUsuarioId($id, array $params=[])
+    public function getByUsuarioId($id, array $params = [])
     {
         $this->requiresClientAccessToken();
         $params['usuario_id'] = is_array($id) ? implode('+', $id) : $id;
@@ -56,5 +58,22 @@ class EstudiantesResource extends AbstractResource
             return null;
         }
         return reset($output);
+    }
+
+    /**
+     * @param int|string $id_estudiante
+     * @param int|string $id_documento
+     * @param EstudianteDocumento $data
+     * @return void
+     */
+    public function putDocumento($id_estudiante, $id_documento, EstudianteDocumento $data)
+    {
+        $this->requiresClientAccessToken();
+        $response = $this->_put(
+            "/escolares/estudiantes/{$id_estudiante}/documentos/{$id_documento}",
+            $data,
+            MediaTypes::APPLICATION_JSON
+        );
+        return $response;
     }
 }
