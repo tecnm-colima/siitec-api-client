@@ -19,6 +19,9 @@ class EstudianteDocumento implements JsonSerializable
 
     public static function fromFile($filepath)
     {
+        if (!file_exists($filepath)) {
+            return null;
+        }
         $obj = new static();
         $obj->filename = basename($filepath);
         $obj->mimetype = mime_content_type($filepath);
