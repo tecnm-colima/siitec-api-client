@@ -40,6 +40,12 @@ class Estudiante
     public $curp;
     public $sexo;
 
+    /**
+     *  Base64 encoded image
+     *  @var string
+     */
+    public $foto;
+
     public $calle;
     public $numero_exterior;
     public $numero_interior;
