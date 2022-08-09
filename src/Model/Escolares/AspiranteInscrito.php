@@ -8,6 +8,7 @@ class AspiranteInscrito
     public $id_usuario;
     public $id_alumno;
     public $num_control;
+    public $created = false;
 
     public function __construct($id_aspirante, $id_usuario, $id_alumno, $num_control)
     {

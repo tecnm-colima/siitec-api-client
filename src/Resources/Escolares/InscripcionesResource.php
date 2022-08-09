@@ -53,7 +53,7 @@ class InscripcionesResource extends AbstractResource
         $this->requiresClientAccessToken();
         $response = $this->_post(
             "/escolares/periodos/{$periodo_id}/inscripciones/batch",
-            $estudiantes,
+            array_values($estudiantes),
             MediaTypes::APPLICATION_JSON
         );
         $rows = HttpHelper::getContent($response);
