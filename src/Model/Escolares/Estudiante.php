@@ -73,6 +73,6 @@ class Estudiante
     public $emails = [];
     /** @var UsuarioTelefono[] */
     public $telefonos = [];
-    /** @var AlumnoContacto */
+    /** @var AlumnoContacto[] */
     public $contactos = [];
 }
