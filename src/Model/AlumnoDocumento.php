@@ -2,7 +2,8 @@
 
 namespace ITColima\SiitecApi\Model;
 
-class AlumnoDocumento {
+class AlumnoDocumento
+{
     public $documentacion_id;
     public $alumno_id;
     public $mime_type;
