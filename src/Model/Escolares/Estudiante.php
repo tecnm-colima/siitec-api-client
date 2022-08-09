@@ -75,4 +75,6 @@ class Estudiante
     public $telefonos = [];
     /** @var AlumnoContacto[] */
     public $contactos = [];
+    /** @var AlumnoDocumento */
+    public $documentacion = [];
 }
