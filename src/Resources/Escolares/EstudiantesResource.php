@@ -91,7 +91,7 @@ class EstudiantesResource extends AbstractResource
             }
         }
         $this->requiresClientAccessToken();
-        $response = $this->_put(
+        $response = $this->_post(
             "/escolares/estudiantes/{$id_estudiante}/documentos",
             $documentos,
             MediaTypes::APPLICATION_JSON

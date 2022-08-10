@@ -38,7 +38,14 @@ class EstudianteDocumento implements JsonSerializable
         if ($pos === false) {
             return null;
         }
-        return substr($this->filename, $pos + 1);
+        $ext = substr($this->filename, $pos + 1);
+        if (empty($ext)) {
+            return null;
+        }
+        if (strpos($ext, ' ') !== false) {
+            return null;
+        }
+        return $ext;
     }
 
     public function writeFile($filepath)
