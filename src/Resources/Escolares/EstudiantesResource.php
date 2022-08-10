@@ -4,6 +4,7 @@ namespace ITColima\SiitecApi\Resources\Escolares;
 
 use Francerz\Http\Utils\Constants\MediaTypes;
 use Francerz\Http\Utils\HttpHelper;
+use InvalidArgumentException;
 use ITColima\SiitecApi\AbstractResource;
 use ITColima\SiitecApi\Model\Escolares\EstudianteDocumento;
 
@@ -72,6 +73,27 @@ class EstudiantesResource extends AbstractResource
         $response = $this->_put(
             "/escolares/estudiantes/{$id_estudiante}/documentos/{$id_documento}",
             $data,
+            MediaTypes::APPLICATION_JSON
+        );
+        return $response;
+    }
+
+    /**
+     * @param int|string $id_estudiante
+     * @param EstudianteDocumento[] $documentos
+     */
+    public function putDocumentos($id_estudiante, array $documentos)
+    {
+        foreach ($documentos as $d) {
+            $d->alumno_id = $id_estudiante;
+            if (!$d instanceof EstudianteDocumento) {
+                throw new InvalidArgumentException("array \$documentos MUST contain only EstudianteDocumento objects.");
+            }
+        }
+        $this->requiresClientAccessToken();
+        $response = $this->_put(
+            "/escolares/estudiantes/{$id_estudiante}/documentos",
+            $documentos,
             MediaTypes::APPLICATION_JSON
         );
         return $response;
