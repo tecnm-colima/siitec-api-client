@@ -117,4 +117,20 @@ class EstudiantesResource extends AbstractResource
         );
         return $response;
     }
+
+    public function putFotoFromFilepath($id_estudiante, string $filepath)
+    {
+        if (!file_exists($filepath)) {
+            throw new InvalidArgumentException('Path does not exists.');
+        }
+        $data = base64_encode(file_get_contents($filepath));
+
+        $this->requiresClientAccessToken();
+        $response = $this->_put(
+            "/escolares/{$id_estudiante}/foto",
+            $data,
+            MediaTypes::TEXT_PLAIN
+        );
+        return $response;
+    }
 }
