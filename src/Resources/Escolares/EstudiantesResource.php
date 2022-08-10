@@ -98,4 +98,23 @@ class EstudiantesResource extends AbstractResource
         );
         return $response;
     }
+
+    /**
+     * @param EstudianteDocumento[] $documentos
+     */
+    public function postDocumentosBatch(array $documentos)
+    {
+        foreach ($documentos as $d) {
+            if (!$d instanceof EstudianteDocumento) {
+                throw new InvalidArgumentException("array \$documentos MUST contain only EstudianteDocumento objects.");
+            }
+        }
+        $this->requiresClientAccessToken();
+        $response = $this->_post(
+            "/escolares/estudiantes/documentos/batch",
+            $documentos,
+            MediaTypes::APPLICATION_JSON
+        );
+        return $response;
+    }
 }
