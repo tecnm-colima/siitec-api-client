@@ -7,9 +7,10 @@ use RuntimeException;
 
 class EstudianteDocumento implements JsonSerializable
 {
+    public $alumno_id;
+    public $documentacion_id;
     public $description;
     public $filename;
-    public $mimetype;
     public $content;
 
     public static function encodeFile($filepath)
@@ -24,7 +25,6 @@ class EstudianteDocumento implements JsonSerializable
         }
         $obj = new static();
         $obj->filename = basename($filepath);
-        $obj->mimetype = mime_content_type($filepath);
         $obj->content = static::encodeFile($filepath);
         return $obj;
     }
@@ -48,7 +48,6 @@ class EstudianteDocumento implements JsonSerializable
             mkdir($dirpath, 0664, true);
         }
 
-
         $f = fopen($filepath, 'w+');
         if ($f === false) {
             throw new RuntimeException("Failed opening file '{$filepath}'.");
@@ -62,9 +61,10 @@ class EstudianteDocumento implements JsonSerializable
     public function jsonSerialize()
     {
         return [
+            'alumno_id' => $this->alumno_id,
+            'documentacion_id' => $this->documentacion_id,
             'description' => $this->description,
             'filename' => $this->filename,
-            'mimetype' => $this->mimetype,
             'content' => $this->content
         ];
     }
