@@ -127,7 +127,7 @@ class EstudiantesResource extends AbstractResource
 
         $this->requiresClientAccessToken();
         $response = $this->_put(
-            "/escolares/{$id_estudiante}/foto",
+            "/escolares/estudiantes/{$id_estudiante}/foto",
             $data,
             MediaTypes::TEXT_PLAIN
         );
