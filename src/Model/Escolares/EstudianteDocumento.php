@@ -52,7 +52,7 @@ class EstudianteDocumento implements JsonSerializable
     {
         $dirpath = dirname($filepath);
         if (!file_exists($dirpath) || !is_dir($dirpath)) {
-            mkdir($dirpath, 0664, true);
+            mkdir($dirpath, 0777, true);
         }
 
         $f = fopen($filepath, 'w+');
