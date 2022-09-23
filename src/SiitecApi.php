@@ -37,7 +37,8 @@ class SiitecApi
     public const ENV_CLIENT_ID                  = 'SIITEC_API_CLIENT_ID';
     public const ENV_CLIENT_SECRET              = 'SIITEC_API_CLIENT_SECRET';
     // ENV DEBUG KEYS
-    public const ENV_HOME_BASE                  = 'SIITEC_HOME_BASE';
+    public const ENV_SIITEC_HOME                = 'SIITEC_HOME';
+    public const ENV_SIITEC_API                 = 'SIITEC_API';
     public const ENV_ENDPOINT_AUTHORIZE         = 'SIITEC_API_AUTHORIZE_ENDPOINT';
     public const ENV_ENDPOINT_TOKEN             = 'SIITEC_API_TOKEN_ENDPOINT';
     public const ENV_ENDPOINT_CALLBACK          = 'SIITEC_API_LOGIN_HANDLER_URI';
@@ -84,7 +85,7 @@ class SiitecApi
         static $homeBase = null;
         if (!isset($homeBase)) {
             $homeBase =
-                rtrim($_ENV[self::ENV_HOME_BASE], '/') ?:
+                rtrim($_ENV[self::ENV_SIITEC_HOME], '/') ?:
                 self::DEFAULT_ENDPOINT_HOME_BASE;
         }
         return $withIndex ?
@@ -194,6 +195,9 @@ class SiitecApi
 
         if (array_key_exists(self::ENV_ENDPOINT_RESOURCES, $_ENV)) {
             $this->setResourcesEndpoint(new Uri($_ENV[self::ENV_ENDPOINT_RESOURCES]));
+        }
+        if (array_key_exists(self::ENV_SIITEC_API, $_ENV)) {
+            $this->setResourcesEndpoint(new Uri($_ENV[self::ENV_SIITEC_API]));
         }
         if (array_key_exists(self::ENV_ENDPOINT_LOGOUT, $_ENV)) {
             $this->logoutUri = new Uri($_ENV[self::ENV_ENDPOINT_LOGOUT]);

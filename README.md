@@ -136,8 +136,8 @@ mismas que pueden modificarse para depuración y ejecución con entornos locales
 # =====================================
 # SIITEC API DEBUGGING
 # =====================================
-SIITEC_HOME_BASE                = 'https://siitec.colima.tecnm.mx'
-SIITEC_API_RESOURCES_ENDPOINT   = 'https://siitec.colima.tecnm.mx/api/index.php'
+SIITEC_HOME  = 'https://siitec.colima.tecnm.mx'
+SIITEC_API   = 'https://siitec.colima.tecnm.mx/api/index.php'
 ```
 
 > **VARIABLES DE ENTORNO ESPECÍFICAS**
