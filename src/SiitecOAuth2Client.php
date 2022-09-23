@@ -61,7 +61,7 @@ class SiitecOAuth2Client implements
             $this->clientSecret = $_ENV[SiitecApi::ENV_CLIENT_SECRET];
         }
 
-        if (array_key_exists(SiitecApi::ENV_HOME_BASE, $_ENV)) {
+        if (array_key_exists(SiitecApi::ENV_SIITEC_HOME, $_ENV)) {
             $authorizeEndpoint = SiitecApi::getHomeUrl('/oauth2/authorize', true);
             $tokenEndpoint = SiitecApi::getHomeUrl('/oauth2/token', true);
         }
