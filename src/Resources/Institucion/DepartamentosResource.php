@@ -17,7 +17,7 @@ class DepartamentosResource extends AbstractResource
     public function getAll(array $params = [])
     {
         $this->requiresAccessToken(false);
-        $response = $this->_get('/institucion/departamentos', $params);
+        $response = $this->protectedGet('/institucion/departamentos', $params);
         $data = HttpHelper::getContent($response);
         return $this->castArray($data, Departamento::class);
     }
@@ -32,7 +32,7 @@ class DepartamentosResource extends AbstractResource
     public function getById($departamento_id, array $params = [])
     {
         $this->requiresAccessToken(false);
-        $response = $this->_get("/institucion/departamentos/{$departamento_id}", $params);
+        $response = $this->protectedGet("/institucion/departamentos/{$departamento_id}", $params);
         $data = HttpHelper::getContent($response);
         return $this->cast($data, Departamento::class);
     }

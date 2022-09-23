@@ -12,14 +12,14 @@ class AspirantesResource extends AbstractResource
     public function getById($aspirante_id, array $params = [])
     {
         $this->requiresClientAccessToken();
-        $response = $this->_get("/preinscripciones/aspirantes/{$aspirante_id}");
+        $response = $this->protectedGet("/preinscripciones/aspirantes/{$aspirante_id}");
         return HttpHelper::getContent($response);
     }
 
     public function patch($id_aspirante, Aspirante $aspirante)
     {
         $this->requiresClientAccessToken();
-        $response = $this->_patch(
+        $response = $this->protectedPatch(
             "/preinscripciones/aspirantes/{$id_aspirante}",
             $aspirante,
             MediaTypes::APPLICATION_JSON

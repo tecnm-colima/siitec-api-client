@@ -24,7 +24,7 @@ class GruposResource extends AbstractResource
     public function getAll(array $params = [])
     {
         $this->requiresAccessToken(false);
-        $response = $this->_get('/escolares/grupos', $params);
+        $response = $this->protectedGet('/escolares/grupos', $params);
         return HttpHelper::getContent($response);
     }
 
@@ -34,21 +34,21 @@ class GruposResource extends AbstractResource
             $grupo_id = join('+', $grupo_id);
         }
         $this->requiresAccessToken(false);
-        $response = $this->_get("/escolares/grupos/{$grupo_id}", $params);
+        $response = $this->protectedGet("/escolares/grupos/{$grupo_id}", $params);
         return HttpHelper::getContent($response);
     }
 
     public function getAsDocente(array $params = [])
     {
         $this->requiresAccessToken(true);
-        $response = $this->_get('/escolares/grupos/@docente', $params);
+        $response = $this->protectedGet('/escolares/grupos/@docente', $params);
         return HttpHelper::getContent($response);
     }
 
     public function getAsEstudiante(array $params = [])
     {
         $this->requiresAccessToken(true);
-        $response = $this->_get('/escolares/grupos/@estudiante', $params);
+        $response = $this->protectedGet('/escolares/grupos/@estudiante', $params);
         return HttpHelper::getContent($response);
     }
 }

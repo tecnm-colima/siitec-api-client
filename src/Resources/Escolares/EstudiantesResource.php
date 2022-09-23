@@ -21,7 +21,7 @@ class EstudiantesResource extends AbstractResource
     public function getAll(array $params = [])
     {
         $this->requiresClientAccessToken(true);
-        $response = $this->_get('/escolares/estudiantes', $params);
+        $response = $this->protectedGet('/escolares/estudiantes', $params);
         return HttpHelper::getContent($response);
     }
 
@@ -29,7 +29,7 @@ class EstudiantesResource extends AbstractResource
     {
         $this->requiresClientAccessToken();
         $params['num_control'] = $num_control;
-        $response = $this->_get('/escolares/estudiantes', $params);
+        $response = $this->protectedGet('/escolares/estudiantes', $params);
         $output = HttpHelper::getContent($response);
         if (empty($output)) {
             return null;
@@ -41,7 +41,7 @@ class EstudiantesResource extends AbstractResource
     {
         $this->requiresClientAccessToken();
         $id = is_array($id) ? implode('+', $id) : $id;
-        $response = $this->_get("/escolares/estudiantes/{$id}", $params);
+        $response = $this->protectedGet("/escolares/estudiantes/{$id}", $params);
         $output = HttpHelper::getContent($response);
         if (empty($output)) {
             return null;
@@ -53,7 +53,7 @@ class EstudiantesResource extends AbstractResource
     {
         $this->requiresClientAccessToken();
         $params['usuario_id'] = is_array($id) ? implode('+', $id) : $id;
-        $response = $this->_get("/escolares/estudiantes", $params);
+        $response = $this->protectedGet("/escolares/estudiantes", $params);
         $output = HttpHelper::getContent($response);
         if (empty($output)) {
             return null;
@@ -70,7 +70,7 @@ class EstudiantesResource extends AbstractResource
     public function putDocumento($id_estudiante, $id_documento, EstudianteDocumento $data)
     {
         $this->requiresClientAccessToken();
-        $response = $this->_put(
+        $response = $this->protectedPut(
             "/escolares/estudiantes/{$id_estudiante}/documentos/{$id_documento}",
             $data,
             MediaTypes::APPLICATION_JSON
@@ -91,7 +91,7 @@ class EstudiantesResource extends AbstractResource
             }
         }
         $this->requiresClientAccessToken();
-        $response = $this->_post(
+        $response = $this->protectedPost(
             "/escolares/estudiantes/{$id_estudiante}/documentos",
             $documentos,
             MediaTypes::APPLICATION_JSON
@@ -110,7 +110,7 @@ class EstudiantesResource extends AbstractResource
             }
         }
         $this->requiresClientAccessToken();
-        $response = $this->_post(
+        $response = $this->protectedPost(
             "/escolares/estudiantes/documentos/batch",
             $documentos,
             MediaTypes::APPLICATION_JSON
@@ -126,7 +126,7 @@ class EstudiantesResource extends AbstractResource
         $data = base64_encode(file_get_contents($filepath));
 
         $this->requiresClientAccessToken();
-        $response = $this->_put(
+        $response = $this->protectedPut(
             "/escolares/estudiantes/{$id_estudiante}/foto",
             $data,
             MediaTypes::TEXT_PLAIN

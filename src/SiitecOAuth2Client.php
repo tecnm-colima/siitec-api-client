@@ -2,6 +2,7 @@
 
 namespace ITColima\SiitecApi;
 
+use Exception;
 use Francerz\Http\Uri;
 use Francerz\OAuth2\AccessToken;
 use Francerz\OAuth2\Client\ClientAccessTokenSaverInterface;
@@ -13,6 +14,7 @@ use Francerz\OAuth2\Client\StateManagerInterface;
 use Francerz\OAuth2\CodeChallengeMethodsEnum;
 use Francerz\OAuth2\PKCEHelper;
 use Psr\Http\Message\UriInterface;
+use RuntimeException;
 
 /**
  * @internal
@@ -29,12 +31,6 @@ class SiitecOAuth2Client implements
     private const KEY_STATE = 'siitec.state';
     private const KEY_PKCE = 'siitec.pkce';
 
-    private const ENV_CLIENT_ID = 'SIITEC_API_CLIENT_ID';
-    private const ENV_CLIENT_SECRET = 'SIITEC_API_CLIENT_SECRET';
-    private const ENV_AUTHORIZE_ENDPOINT = 'SIITEC_API_AUTHORIZE_ENDPOINT';
-    private const ENV_TOKEN_ENDPOINT = 'SIITEC_API_TOKEN_ENDPOINT';
-    private const ENV_CALLBACK_ENDPOINT = 'SIITEC_API_LOGIN_HANDLER_URI';
-
     private $clientId;
     private $clientSecret;
     private $authorizeEndpoint;
@@ -46,6 +42,8 @@ class SiitecOAuth2Client implements
     private $keyState = self::KEY_STATE;
     private $keyPkce = self::KEY_PKCE;
 
+    private $pathClientAccessToken = null;
+
     public function __construct()
     {
         $this->init();
@@ -53,29 +51,79 @@ class SiitecOAuth2Client implements
 
     private function init()
     {
-        $this->authorizeEndpoint = new Uri(SiitecApiConstants::AUTHORIZE_ENDPOINT);
-        $this->tokenEndpoint = new Uri(SiitecApiConstants::TOKEN_ENDPOINT);
+        $authorizeEndpoint = SiitecApi::DEFAULT_AUTHORIZE_ENDPOINT;
+        $tokenEndpoint = SiitecApi::DEFAULT_TOKEN_ENDPOINT;
 
-        if (array_key_exists(self::ENV_CLIENT_ID, $_ENV)) {
-            $this->clientId = $_ENV[self::ENV_CLIENT_ID];
+        if (array_key_exists(SiitecApi::ENV_CLIENT_ID, $_ENV)) {
+            $this->clientId = $_ENV[SiitecApi::ENV_CLIENT_ID];
         }
-        if (array_key_exists(self::ENV_CLIENT_SECRET, $_ENV)) {
-            $this->clientSecret = $_ENV[self::ENV_CLIENT_SECRET];
+        if (array_key_exists(SiitecApi::ENV_CLIENT_SECRET, $_ENV)) {
+            $this->clientSecret = $_ENV[SiitecApi::ENV_CLIENT_SECRET];
         }
-        if (array_key_exists(self::ENV_AUTHORIZE_ENDPOINT, $_ENV)) {
-            $this->authorizeEndpoint = new Uri($_ENV[self::ENV_AUTHORIZE_ENDPOINT]);
+
+        if (array_key_exists(SiitecApi::ENV_HOME_BASE, $_ENV)) {
+            $authorizeEndpoint = SiitecApi::getHomeUrl('/oauth2/authorize', true);
+            $tokenEndpoint = SiitecApi::getHomeUrl('/oauth2/token', true);
         }
-        if (array_key_exists(self::ENV_TOKEN_ENDPOINT, $_ENV)) {
-            $this->tokenEndpoint = new Uri($_ENV[self::ENV_TOKEN_ENDPOINT]);
+
+        if (array_key_exists(SiitecApi::ENV_ENDPOINT_AUTHORIZE, $_ENV)) {
+            $authorizeEndpoint = $_ENV[SiitecApi::ENV_ENDPOINT_AUTHORIZE];
         }
-        if (array_key_exists(self::ENV_CALLBACK_ENDPOINT, $_ENV)) {
-            $this->callbackEndpoint = new Uri($_ENV[self::ENV_CALLBACK_ENDPOINT]);
+        if (array_key_exists(SiitecApi::ENV_ENDPOINT_TOKEN, $_ENV)) {
+            $tokenEndpoint = $_ENV[SiitecApi::ENV_ENDPOINT_TOKEN];
         }
+
+        $this->authorizeEndpoint = new Uri($authorizeEndpoint);
+        $this->tokenEndpoint = new Uri($tokenEndpoint);
 
         $this->keyClientAccessToken = self::KEY_CLIENT_ACCESS_TOKEN . '@' . $this->clientId;
         $this->keyOwnerAccessToken = self::KEY_OWNER_ACCESS_TOKEN . '@' . $this->clientId;
         $this->keyState = self::KEY_STATE . '@' . $this->clientId;
         $this->keyPkce = self::KEY_PKCE . '@' . $this->keyPkce;
+
+        $this->pathClientAccessToken = dirname(__FILE__, 2) . "/.oauth2/access_token_{$this->clientId}.json";
+    }
+
+    private function saveClientAccessTokenToFile(AccessToken $accessToken)
+    {
+        $filepath = $this->pathClientAccessToken;
+        $filedir = dirname($filepath);
+        if (!file_exists($filedir)) {
+            mkdir($filedir, 0777, true);
+        }
+        $file = fopen($filepath, 'w');
+        if ($file === false) {
+            $error = error_get_last();
+            throw new RuntimeException(
+                is_array($error) && isset($error['message']) ?
+                $error['message'] :
+                'Failed to write Siitec API Client Access Token file.'
+            );
+        }
+        $written = fwrite($file, json_encode($accessToken));
+        if ($written === false) {
+            $error = error_get_last();
+            throw new RuntimeException(
+                is_array($error) && isset($error['message']) ?
+                $error['message'] :
+                'Failed to write Siitec API Client Access Token file.'
+            );
+        }
+        fclose($file);
+    }
+
+    private function loadClientAccessTokenFromFile(): ?AccessToken
+    {
+        $filepath = $this->pathClientAccessToken;
+        if (!file_exists($filepath)) {
+            return null;
+        }
+        $jsonString = \file_get_contents($filepath);
+        try {
+            return AccessToken::fromJsonString($jsonString);
+        } catch (Exception $ex) {
+            return null;
+        }
     }
 
     public function getClientId(): string
@@ -110,12 +158,21 @@ class SiitecOAuth2Client implements
 
     public function loadClientAccessToken(): ?AccessToken
     {
-        return $_SESSION[$this->keyClientAccessToken] ?? null;
+        /** @var AccessToken|null */
+        $accessToken = $_SESSION[$this->keyClientAccessToken] ?? null;
+        if (!isset($accessToken) || isset($accessToken) && $accessToken->isExpired()) {
+            $_SESSION[$this->keyClientAccessToken] = $this->loadClientAccessTokenFromFile();
+        }
+        return $_SESSION[$this->keyClientAccessToken];
     }
 
     public function saveClientAccessToken(AccessToken $accessToken)
     {
         $_SESSION[$this->keyClientAccessToken] = $accessToken;
+        try {
+            $this->saveClientAccessTokenToFile($accessToken);
+        } catch (Exception $ex) {
+        }
     }
 
     public function loadOwnerAccessToken(): ?AccessToken

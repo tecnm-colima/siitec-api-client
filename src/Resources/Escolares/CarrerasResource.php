@@ -17,7 +17,7 @@ class CarrerasResource extends AbstractResource
     public function getAll(array $params = [])
     {
         $this->requiresAccessToken(false);
-        $response = $this->_get('/escolares/carreras', $params);
+        $response = $this->protectedGet('/escolares/carreras', $params);
         $data = HttpHelper::getContent($response);
         return $this->castArray($data, Carrera::class);
     }
@@ -35,7 +35,7 @@ class CarrerasResource extends AbstractResource
         if (is_array($carrera_id)) {
             $carrera_id = join('+', $carrera_id);
         }
-        $response = $this->_get("/escolares/carreras/{$carrera_id}", $params);
+        $response = $this->protectedGet("/escolares/carreras/{$carrera_id}", $params);
         $data = HttpHelper::getContent($response);
         return is_array($carrera_id) ?
             $this->castArray($data, Carrera::class) :

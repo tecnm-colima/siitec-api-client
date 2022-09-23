@@ -12,7 +12,7 @@ class ProcesosResource extends AbstractResource
     public function getPagos($id_proceso, array $params = [])
     {
         $this->requiresClientAccessToken();
-        $response = $this->_get("/pagos/procesos/{$id_proceso}/pagos", $params);
+        $response = $this->protectedGet("/pagos/procesos/{$id_proceso}/pagos", $params);
         $rows = HttpHelper::getContent($response);
         foreach ($rows as &$row) {
             $row = Objects::cast($row, Pago::class);
@@ -22,7 +22,7 @@ class ProcesosResource extends AbstractResource
 
     public function getById($id_proceso, array $params = [])
     {
-        $response = $this->_get("/pagos/procesos/{$id_proceso}", $params);
+        $response = $this->protectedGet("/pagos/procesos/{$id_proceso}", $params);
         return HttpHelper::getContent($response);
     }
 }

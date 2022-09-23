@@ -23,14 +23,14 @@ class InscripcionesResource extends AbstractResource
     public function put(Inscripcion $reins)
     {
         $this->requiresClientAccessToken();
-        $response = $this->_put("/escolares/inscripciones/{$reins->id_estudiante}/{$reins->id_periodo}", null);
+        $response = $this->protectedPut("/escolares/inscripciones/{$reins->id_estudiante}/{$reins->id_periodo}", null);
         return HttpHelper::getContent($response);
     }
 
     public function putAspirante(InscripcionAspirante $inscr)
     {
         $this->requiresClientAccessToken();
-        $response = $this->_put("/escolares/inscripciones/aspirantes/{$inscr->id_aspirante}/{$inscr->id_periodo}", null);
+        $response = $this->protectedPut("/escolares/inscripciones/aspirantes/{$inscr->id_aspirante}/{$inscr->id_periodo}", null);
         return HttpHelper::getContent($response);
     }
 
@@ -51,7 +51,7 @@ class InscripcionesResource extends AbstractResource
         }
 
         $this->requiresClientAccessToken();
-        $response = $this->_post(
+        $response = $this->protectedPost(
             "/escolares/periodos/{$periodo_id}/inscripciones/batch",
             array_values($estudiantes),
             MediaTypes::APPLICATION_JSON

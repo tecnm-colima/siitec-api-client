@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace ITColima\SiitecApi\Resources\Google;
 
@@ -14,14 +14,14 @@ class UsersResource extends AbstractResource
 {
     /**
      * Envía los datos para poder crear una cuenta de usuario nueva.
-     * 
+     *
      * @param User $user
      * @return void
      */
     public function create(User $user)
     {
         $this->requiresClientAccessToken(true);
-        $response = $this->_post('/google/users/', $user, MediaTypes::APPLICATION_JSON);
+        $response = $this->protectedPost('/google/users/', $user, MediaTypes::APPLICATION_JSON);
         return HttpHelper::getContent($response);
     }
 
@@ -35,7 +35,7 @@ class UsersResource extends AbstractResource
     public function update($email, UserName $user)
     {
         $this->requiresClientAccessToken(true);
-        $response = $this->_patch("/google/users/{$email}", $user);
+        $response = $this->protectedPatch("/google/users/{$email}", $user);
         return HttpHelper::getContent($response);
     }
 
@@ -49,7 +49,7 @@ class UsersResource extends AbstractResource
     public function putPhoto($email, UserPhoto $photo)
     {
         $this->requiresClientAccessToken(true);
-        $response = $this->_put("/google/users/{$email}/foto", $photo, MediaTypes::APPLICATION_JSON);
+        $response = $this->protectedPut("/google/users/{$email}/foto", $photo, MediaTypes::APPLICATION_JSON);
         return HttpHelper::getContent($response);
     }
 
@@ -63,7 +63,7 @@ class UsersResource extends AbstractResource
     public function updateEmail($email, $newEmail)
     {
         $this->requiresClientAccessToken(true);
-        $response = $this->_post("/google/users/{$email}/email", ['newEmail' => $newEmail]);
+        $response = $this->protectedPost("/google/users/{$email}/email", ['newEmail' => $newEmail]);
         return HttpHelper::getContent($response);
     }
 
@@ -76,12 +76,12 @@ class UsersResource extends AbstractResource
     public function suspend($email)
     {
         $this->requiresClientAccessToken(true);
-        $response = $this->_post("/google/users/{$email}/suspender", []);
+        $response = $this->protectedPost("/google/users/{$email}/suspender", []);
         return HttpHelper::getContent($response);
     }
 
     /**
-     * Activa la cuenta de correo deseada. 
+     * Activa la cuenta de correo deseada.
      *
      * @param string $email
      * @return void
@@ -89,7 +89,7 @@ class UsersResource extends AbstractResource
     public function activate($email)
     {
         $this->requiresClientAccessToken(true);
-        $response = $this->_post("/google/users/{$email}/activar", []);
+        $response = $this->protectedPost("/google/users/{$email}/activar", []);
         return HttpHelper::getContent($response);
     }
 
@@ -103,7 +103,7 @@ class UsersResource extends AbstractResource
     public function setPassword($email, $newPassword)
     {
         $this->requiresClientAccessToken(true);
-        $response = $this->_post("/google/users/{$email}/password", ['password' => $newPassword]);
+        $response = $this->protectedPost("/google/users/{$email}/password", ['password' => $newPassword]);
         return HttpHelper::getContent($response);
     }
 
@@ -117,7 +117,7 @@ class UsersResource extends AbstractResource
     public function setPasswordSha1($email, $newPasswordSHA1)
     {
         $this->requiresClientAccessToken(true);
-        $response = $this->_post("/google/users/{$email}/password/sha1", ['password' => $newPasswordSHA1]);
+        $response = $this->protectedPost("/google/users/{$email}/password/sha1", ['password' => $newPasswordSHA1]);
         return HttpHelper::getContent($response);
     }
 
@@ -131,7 +131,7 @@ class UsersResource extends AbstractResource
     public function getInfo($email)
     {
         $this->requiresClientAccessToken(true);
-        $response = $this->_get("/google/users/{$email}", []);
+        $response = $this->protectedGet("/google/users/{$email}", []);
         return httpHelper::getContent($response);
     }
 
@@ -144,7 +144,7 @@ class UsersResource extends AbstractResource
     public function delete($email)
     {
         $this->requiresClientAccessToken(true);
-        $response = $this->_delete("/google/users/{$email}");
+        $response = $this->protectedDelete("/google/users/{$email}");
         return HttpHelper::getContent($response);
     }
 
@@ -158,7 +158,7 @@ class UsersResource extends AbstractResource
     public function removeAlias($email, $alias)
     {
         $this->requiresClientAccessToken(true);
-        $response = $this->_delete("/google/users/{$email}/alias/$alias");
+        $response = $this->protectedDelete("/google/users/{$email}/alias/$alias");
         return HttpHelper::getContent($response);
     }
 
@@ -172,26 +172,26 @@ class UsersResource extends AbstractResource
     public function addAlias($email, $alias)
     {
         $this->requiresClientAccessToken(true);
-        $response = $this->_post("/google/users/{$email}/alias", ['alias' => $alias]);
+        $response = $this->protectedPost("/google/users/{$email}/alias", ['alias' => $alias]);
         return HttpHelper::getContent($response);
     }
 
     /**
      *  Funcion para obtener la informacion de un grupo.
-     * 
+     *
      * @param string $email
      * @return void
      */
     public function getInfoGroup($email)
     {
         $this->requiresClientAccessToken(true);
-        $response = $this->_get("/google/users/{$email}/group", []);
+        $response = $this->protectedGet("/google/users/{$email}/group", []);
         return httpHelper::getContent($response);
     }
 
     /**
      * Funcion para añadir miembros  a un grupo.
-     * 
+     *
      * @param string $email
      * @param Member $member
      * @return void
@@ -199,7 +199,7 @@ class UsersResource extends AbstractResource
     public function insertMemeber($email, Member $member)
     {
         $this->requiresClientAccessToken(true);
-        $response = $this->_put("/google/users/{$email}/group", $member, MediaTypes::APPLICATION_JSON);
+        $response = $this->protectedPut("/google/users/{$email}/group", $member, MediaTypes::APPLICATION_JSON);
         return HttpHelper::getContent($response);
     }
 }

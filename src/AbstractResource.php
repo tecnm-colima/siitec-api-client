@@ -4,7 +4,6 @@ namespace ITColima\SiitecApi;
 
 use Fig\Http\Message\RequestMethodInterface;
 use Francerz\Http\Utils\Constants\MediaTypes;
-use Francerz\Http\Utils\Constants\Methods;
 use Francerz\Http\Utils\Exceptions\ClientErrorException;
 use Francerz\Http\Utils\Exceptions\ServerErrorException;
 use Francerz\Http\Utils\HttpHelper;
@@ -20,9 +19,9 @@ abstract class AbstractResource
     private $requiresClientAccessToken;
     private $httpHelper;
 
-    public function __construct(SiitecApi $cliente)
+    public function __construct(?SiitecApi $cliente = null)
     {
-        $this->cliente = $cliente;
+        $this->cliente = $cliente ?? SiitecApi::getLastInstance();
         $this->requiresAccessToken = false;
         $this->requiresClientAccessToken = false;
         $this->httpHelper = new HttpHelper($cliente->getHttpFactoryManager());
@@ -39,7 +38,7 @@ abstract class AbstractResource
     }
 
     protected function buildRequest(
-        string $method, 
+        string $method,
         string $path,
         array $params = [],
         $content = null,
@@ -69,7 +68,7 @@ abstract class AbstractResource
         return $request;
     }
 
-    protected function sendRequest(RequestInterface $request) : ResponseInterface
+    protected function sendRequest(RequestInterface $request): ResponseInterface
     {
         $response = $this->cliente->getHttpClient()->sendRequest($request);
         if (HttpHelper::isClientError($response)) {
@@ -88,31 +87,40 @@ abstract class AbstractResource
         return $response;
     }
 
-    protected function _get(string $path, array $params = [])
+    protected function protectedGet(string $path, array $params = [])
     {
         $request = $this->buildRequest(RequestMethodInterface::METHOD_GET, $path, $params);
         return $this->sendRequest($request);
     }
 
-    protected function _post(string $path, $content, string $mediaType = MediaTypes::APPLICATION_X_WWW_FORM_URLENCODED)
-    {
+    protected function protectedPost(
+        string $path,
+        $content,
+        string $mediaType = MediaTypes::APPLICATION_X_WWW_FORM_URLENCODED
+    ) {
         $request = $this->buildRequest(RequestMethodInterface::METHOD_POST, $path, [], $content, $mediaType);
         return $this->sendRequest($request);
     }
 
-    protected function _put(string $path, $content, string $mediaType = MediaTypes::APPLICATION_X_WWW_FORM_URLENCODED)
-    {
+    protected function protectedPut(
+        string $path,
+        $content,
+        string $mediaType = MediaTypes::APPLICATION_X_WWW_FORM_URLENCODED
+    ) {
         $request = $this->buildRequest(RequestMethodInterface::METHOD_PUT, $path, [], $content, $mediaType);
         return $this->sendRequest($request);
     }
 
-    protected function _patch(string $path, $content, string $mediaType = MediaTypes::APPLICATION_X_WWW_FORM_URLENCODED)
-    {
+    protected function protectedPatch(
+        string $path,
+        $content,
+        string $mediaType = MediaTypes::APPLICATION_X_WWW_FORM_URLENCODED
+    ) {
         $request = $this->buildRequest(RequestMethodInterface::METHOD_PATCH, $path, [], $content, $mediaType);
         return $this->sendRequest($request);
     }
 
-    protected function _delete(string $path)
+    protected function protectedDelete(string $path)
     {
         $request = $this->buildRequest(RequestMethodInterface::METHOD_DELETE, $path);
         return $this->sendRequest($request);

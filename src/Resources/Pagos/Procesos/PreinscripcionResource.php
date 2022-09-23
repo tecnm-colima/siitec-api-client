@@ -18,7 +18,7 @@ class PreinscripcionResource extends AbstractResource
      */
     public function getAll(array $params = [])
     {
-        $response = $this->_get('/pagos/procesos/preinscripcion', $params);
+        $response = $this->protectedGet('/pagos/procesos/preinscripcion', $params);
         return HttpHelper::getContent($response);
     }
 
@@ -27,13 +27,13 @@ class PreinscripcionResource extends AbstractResource
         if (is_array($id_proceso)) {
             $id_proceso = join('+', $id_proceso);
         }
-        $response = $this->_get("/pagos/procesos/preinscripcion/{$id_proceso}", $params);
+        $response = $this->protectedGet("/pagos/procesos/preinscripcion/{$id_proceso}", $params);
         return HttpHelper::getContent($response);
     }
 
     public function getCurrent(array $params = [])
     {
-        $response = $this->_get('/pagos/procesos/preinscripcion/@current', $params);
+        $response = $this->protectedGet('/pagos/procesos/preinscripcion/@current', $params);
         return HttpHelper::getContent($response);
     }
 }

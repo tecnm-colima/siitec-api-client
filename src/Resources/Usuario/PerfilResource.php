@@ -15,7 +15,7 @@ class PerfilResource extends AbstractResource
     public function getOwn()
     {
         $this->requiresAccessToken(true);
-        $response = $this->_get('/usuarios/perfil/own');
+        $response = $this->protectedGet('/usuarios/perfil/own');
         return HttpHelper::getContent($response);
     }
 }

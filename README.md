@@ -7,7 +7,7 @@ Instalación
 La instalación del paquete se puede hacer mediante **composer** utilizando el
 siguiente comando:
 
-```
+```sh
 composer require itcolima/siitec-api-client
 ```
 
@@ -24,20 +24,24 @@ use ITColima\SiitecApi\SiitecApi;
 $_ENV['SIITEC_API_CLIENT_ID'] = '<client_id>';
 $_ENV['SIITEC_API_CLIENT_SECRET'] = '<client_secret>';
 
-$api = new SiitecApi();
+$siitecApi = new SiitecApi();
 ```
 
-> **Carga automática de las variables de entorno `$_ENV`**
+> **CARGA AUTOMÁTICA DE LAS VARIABLES DE ENTORNO `$_ENV`**
+>
 > La API de SIITEC puede cargar automáticamente las variables de entorno si
 > se utiliza un framework o librería que las cargue desde un archivo `.env`.
 > En el archivo deberían incluirse de la siguiente manera:
-> ```bash
-> # Credenciales de API de SIITEC
+> ```sh
+> # ===================================
+> # SIITEC API SETTINGS
+> # ===================================
 > SIITEC_API_CLIENT_ID = '<client_id>'
 > SIITEC_API_CLIENT_SECRET = '<client_secret>'
 > ```
 
-> **NOTA**  
+> **NOTA**
+>
 > Los valores de los parámetros `<client_id>` y `<client_secret>` son proporcionados
 > por el Departamento de Centro de Cómputo del Instituto Tecnológico de Colima.
 
@@ -62,46 +66,63 @@ funcionalidad.
 ### Implementación de las funciones de inicio de sesión
 
 ```php
-namespace App\Controllers;
-
 use ITColima\SiitecApi\SiitecApi;
-use Francerz\Http\Utils\UriHelper;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
-class OAuth2 extends AbstractController
+class OAuth2Controller
 {
-    public function login()
+    /**
+     * Recibe la solicitud del cliente para iniciar proceso de inicio de sesión.
+     *
+     * Ruta: GET /oauth2[/]
+     */
+    public function indexGet(): ResponseInterface
     {
         $siitecApi = new SiitecApi();
 
         if ($api->isLoggedIn()) {
-            $response = $siitecApi->redirectTo($siitecApi->siteUrl());
-            return $siitecApi->emitResponse($response);
+            return SiitecApi::redirectTo(SiitecApi::siteUrl());
         }
 
         $response = $siitecApi->login(
-            $siitecApi->siteUrl('/oauth2/login_handler'),
-            $siitecApi->siteUrl('/oauth2/logout')
+            SiitecApi::siteUrl('/oauth2/login_handler'),
+            SiitecApi::siteUrl('/oauth2/logout')
         );
-        return $siitecApi->emitResponse($response);
+        return $response;
     }
 
-    public function login_handler()
+    /**
+     * Recibe la respuesta del servidor de autorización con el código de
+     * autorización o error, según corresponda el caso.
+     *
+     * Ruta: GET /oauth2/callback[/]
+     */
+    public function callbackGet(ServerRequestInterface $request): ResponseInterface
     {
         $siitecApi = new SiitecApi();
-        $siitecApi->handleLogin();
-        return $siitecApi->redirectTo($siitec->siteUrl());
+        $redirUri = $siitecApi->handleLogin($request);
+        return SiitecApi::redirectTo($redirUri);
     }
 
-    public function logout()
+    /**
+     * Destruye la sesión y hace la solicitud para cancelar la sesión activa del
+     * usuario en SIITEC.
+     *
+     * Ruta: GET /logout[/]
+     */
+    public function logoutGet(ServerRequestInterface $request): ResponseInterface
     {
         $siitecApi = new SiitecApi();
-        $response = $siitecApi->handleLogout();
-        return $siitecApi->emitResponse($response);
+        $response = $siitecApi->handleLogout($request);
+        session_destroy();
+        return SiitecApi::emitResponse($response);
     }
 }
 ```
 
 > **NOTA**
+>
 > La implementación puede variar dependiendo del framework y técnica
 > para el desarrollo que se esté utilizando.
 
@@ -109,10 +130,27 @@ DEPURACIÓN
 ----------
 
 De manera predeterminada la API tiene asociadas direcciones de inicialización,
-mismas que pueden modificarse para depuración y ejecución con entonos locales.
+mismas que pueden modificarse para depuración y ejecución con entornos locales.
 
-```env
-SIITEC_API_AUTHORIZE_ENDPOINT = 'https://siitec.colima.tecnm.mx/index.php/oauth2/authorize'
-SIITEC_API_TOKEN_ENDPOINT = 'https://siitec.colima.tecnm.mx/index.php/oauth2/token'
-SIITEC_API_RESOURCES_ENDPOINT = 'https://siitec.colima.tecnm.mx/api/index.php'
+```sh
+# =====================================
+# SIITEC API DEBUGGING
+# =====================================
+SIITEC_HOME_BASE                = 'https://siitec.colima.tecnm.mx'
+SIITEC_API_RESOURCES_ENDPOINT   = 'https://siitec.colima.tecnm.mx/api/index.php'
 ```
+
+> **VARIABLES DE ENTORNO ESPECÍFICAS**
+>
+> Alternativamente puede utilizar variables de entorno específicas para los
+> mecanismo de autenticación, aunque esto se recomienda para depuraciones
+> específicas, y no conviene utilizarse de manera generalizada.
+> 
+> ```sh
+> # =====================================
+> # SIITEC API DEBUGGING
+> # =====================================
+> SIITEC_API_AUTHORIZE_ENDPOINT = 'https://siitec.colima.tecnm.mx/index.php/oauth2/authorize'
+> SIITEC_API_TOKEN_ENDPOINT     = 'https://siitec.colima.tecnm.mx/index.php/oauth2/token'
+> SIITEC_API_RESOURCES_ENDPOINT = 'https://siitec.colima.tecnm.mx/api/index.php'
+> ```

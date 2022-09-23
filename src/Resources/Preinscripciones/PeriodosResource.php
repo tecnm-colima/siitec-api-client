@@ -6,7 +6,8 @@ use Francerz\Http\Utils\HttpHelper;
 use ITColima\SiitecApi\AbstractResource;
 
 class PeriodosResource extends AbstractResource
-{/**
+{
+    /**
      * Obtiene los periodos de preinscripción que cumplan con los parámetros.
      *
      * @param array $params
@@ -15,7 +16,7 @@ class PeriodosResource extends AbstractResource
      */
     public function getAll(array $params = [])
     {
-        $response = $this->_get('/preinscripciones/periodos', $params);
+        $response = $this->protectedGet('/preinscripciones/periodos', $params);
         return HttpHelper::getContent($response);
     }
 
@@ -33,7 +34,7 @@ class PeriodosResource extends AbstractResource
         if (is_array($periodo_id)) {
             $periodo_id = join('+', $periodo_id);
         }
-        $response = $this->_get("/preinscripciones/periodos/{$periodo_id}", $params);
+        $response = $this->protectedGet("/preinscripciones/periodos/{$periodo_id}", $params);
         return HttpHelper::getContent($response);
     }
 }

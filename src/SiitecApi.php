@@ -6,6 +6,7 @@ use Exception;
 use Fig\Http\Message\StatusCodeInterface;
 use Francerz\Http\Client as HttpClient;
 use Francerz\Http\HttpFactory;
+use Francerz\Http\Response;
 use Francerz\Http\Server;
 use Francerz\Http\Uri;
 use Francerz\Http\Utils\HttpFactoryManager;
@@ -15,6 +16,7 @@ use Francerz\Http\Utils\UriHelper;
 use Francerz\OAuth2\Client\OAuth2Client;
 use Francerz\OAuth2\ScopeHelper;
 use InvalidArgumentException;
+use ITColima\SiitecApi\Core\SiitecUserScopes;
 use ITColima\SiitecApi\Model\Perfil;
 use ITColima\SiitecApi\Resources\Usuario\PerfilResource;
 use Psr\Http\Message\ResponseInterface;
@@ -24,19 +26,34 @@ use RuntimeException;
 
 class SiitecApi
 {
-    public const SSL_MODE_DEFAULT = 0;
-    public const SSL_MODE_DISABLED = 1;
-    public const SSL_MODE_INTERNAL = 2;
+    // DEFAULT VALUES
+    public const DEFAULT_ENDPOINT_HOME_BASE     = 'https://siitec.colima.tecnm.mx';
+    public const DEFAULT_ENDPOINT_HOME_INDEX    = 'index.php';
+    public const DEFAULT_AUTHORIZE_ENDPOINT     = 'https://siitec.colima.tecnm.mx/index.php/oauth2/authorize';
+    public const DEFAULT_TOKEN_ENDPOINT         = 'https://siitec.colima.tecnm.mx/index.php/oauth2/token';
+    public const DEFAULT_RESOURCES_ENDPOINT     = 'https://siitec.colima.tecnm.mx/api/index.php';
 
-    private const ENV_RESOURCES_ENDPOINT = 'SIITEC_API_RESOURCES_ENDPOINT';
-    private const ENV_LOGOUT_ENDPOINT = 'SIITEC_API_LOGOUT_ENDPOINT';
-    private const ENV_PAGOS_URI = 'SIITEC_API_PAGOS_URL';
-    private const ENV_DOCENCIA_URI = 'SIITEC_API_DOCENCIA_URL';
+    // ENV BASIC KEYS
+    public const ENV_CLIENT_ID                  = 'SIITEC_API_CLIENT_ID';
+    public const ENV_CLIENT_SECRET              = 'SIITEC_API_CLIENT_SECRET';
+    // ENV DEBUG KEYS
+    public const ENV_HOME_BASE                  = 'SIITEC_HOME_BASE';
+    public const ENV_ENDPOINT_AUTHORIZE         = 'SIITEC_API_AUTHORIZE_ENDPOINT';
+    public const ENV_ENDPOINT_TOKEN             = 'SIITEC_API_TOKEN_ENDPOINT';
+    public const ENV_ENDPOINT_CALLBACK          = 'SIITEC_API_LOGIN_HANDLER_URI';
+    public const ENV_ENDPOINT_LOGOUT            = 'SIITEC_API_LOGOUT_ENDPOINT';
+    public const ENV_ENDPOINT_RESOURCES         = 'SIITEC_API_RESOURCES_ENDPOINT';
+    public const ENV_URI_PAGOS                  = 'SIITEC_API_PAGOS_URL';
+    public const ENV_URI_DOCENCIA               = 'SIITEC_API_DOCENCIA_URL';
 
-    private const SESSION_PERFIL_KEY = 'siitec.perfil';
-    private const SESSION_CALLBACK_KEY = 'siitec.oauth2Callback';
+    public const SSL_MODE_DEFAULT               = 0;
+    public const SSL_MODE_DISABLED              = 1;
+    public const SSL_MODE_INTERNAL              = 2;
 
-    public const QUERY_REDIR_PARAMETER = 'redir';
+    private const SESSION_PERFIL_KEY            = 'siitec.perfil';
+    private const SESSION_CALLBACK_KEY          = 'siitec.oauth2Callback';
+
+    public const QUERY_REDIR_PARAMETER          = 'redir';
 
     private $httpClient;
     private $oauth2Client;
@@ -46,29 +63,63 @@ class SiitecApi
     /** @var Perfil */
     private $perfil = null;
     private $httpHelper;
-    private $loginHandlerUri = null;
 
     private $sessionPerfilKey = self::SESSION_PERFIL_KEY;
     private $sessionCallbackKey = self::SESSION_CALLBACK_KEY;
 
+    /**  @var static|null */
+    private static $lastInstance = null;
+
     #region STATIC METHODS
-    public static function getPlatformUrl(string $url = ''): string
+    public static function getLastInstance()
     {
-        return SiitecApiConstants::PLATFORM_URL . '/' . ltrim($url, '/');
+        if (isset(static::$lastInstance)) {
+            return static::$lastInstance;
+        }
+        return new static();
+    }
+
+    private static function getHomeBase(bool $withIndex = false): string
+    {
+        static $homeBase = null;
+        if (!isset($homeBase)) {
+            $homeBase =
+                rtrim($_ENV[self::ENV_HOME_BASE], '/') ?:
+                self::DEFAULT_ENDPOINT_HOME_BASE;
+        }
+        return $withIndex ?
+            $homeBase . '/' . self::DEFAULT_ENDPOINT_HOME_INDEX :
+            $homeBase;
+    }
+
+    /**
+     * @deprecated
+     * @param string $url
+     * @param boolean $withIndex
+     * @return string
+     */
+    public static function getPlatformUrl(string $url = '', bool $withIndex = false): string
+    {
+        return self::getHomeUrl($url, $withIndex);
+    }
+
+    public static function getHomeUrl(string $url = '', bool $withIndex = false): string
+    {
+        return self::getHomeBase($withIndex) . '/' . ltrim($url, '/');
     }
 
     public static function getLogoutUrl(): string
     {
-        return static::getPlatformUrl('/index.php/usuarios/logout');
+        return static::getHomeUrl('usuarios/logout', true);
     }
 
     public static function getPagosUrl(string $url = ''): string
     {
         static $pagosUrl = null;
         if (is_null($pagosUrl)) {
-            $pagosUrl = array_key_exists(self::ENV_PAGOS_URI, $_ENV) ?
-                $_ENV[self::ENV_PAGOS_URI] :
-                self::getPlatformUrl('/pagos/index.php');
+            $pagosUrl = array_key_exists(self::ENV_URI_PAGOS, $_ENV) ?
+                $_ENV[self::ENV_URI_PAGOS] :
+                self::getHomeUrl('/pagos/index.php');
         }
         $retUrl = $pagosUrl;
         $retUrl .= empty($url) ? '' : '/' . ltrim($url, '/');
@@ -79,9 +130,9 @@ class SiitecApi
     {
         static $docenciaUrl = null;
         if (is_null($docenciaUrl)) {
-            $docenciaUrl = array_key_exists(self::ENV_DOCENCIA_URI, $_ENV) ?
-                $_ENV[self::ENV_DOCENCIA_URI] :
-                self::getPlatformUrl('/docencia/index.php');
+            $docenciaUrl = array_key_exists(self::ENV_URI_DOCENCIA, $_ENV) ?
+                $_ENV[self::ENV_URI_DOCENCIA] :
+                self::getHomeUrl('/docencia/index.php');
         }
         $retUrl = $docenciaUrl;
         $retUrl .= empty($url) ? '' : '/' . ltrim($url, '/');
@@ -94,9 +145,12 @@ class SiitecApi
         $server->emitResponse($response);
     }
 
-    public function redirectTo($location, int $code = StatusCodeInterface::STATUS_TEMPORARY_REDIRECT)
+    public static function redirectTo($location, int $code = StatusCodeInterface::STATUS_TEMPORARY_REDIRECT)
     {
-        return $this->httpHelper->makeRedirect($location, $code);
+        $response = new Response();
+        return $response
+            ->withStatus($code)
+            ->withHeader('Location', (string)$location);
     }
 
     public static function siteUrl(?string $path = null)
@@ -130,18 +184,19 @@ class SiitecApi
         $this->sessionPerfilKey = self::SESSION_PERFIL_KEY . '@' . $this->oauth2Client->getClientId();
         $this->sessionCallbackKey = self::SESSION_CALLBACK_KEY . '@' . $this->oauth2Client->getClientId();
         $this->init();
+        static::$lastInstance = $this;
     }
 
     private function init()
     {
         $this->setSSLMode(self::SSL_MODE_DEFAULT);
-        $this->setResourcesEndpoint(new Uri(SiitecApiConstants::API_ENDPOINT));
+        $this->setResourcesEndpoint(new Uri(self::DEFAULT_RESOURCES_ENDPOINT));
 
-        if (array_key_exists(self::ENV_RESOURCES_ENDPOINT, $_ENV)) {
-            $this->setResourcesEndpoint(new Uri($_ENV[self::ENV_RESOURCES_ENDPOINT]));
+        if (array_key_exists(self::ENV_ENDPOINT_RESOURCES, $_ENV)) {
+            $this->setResourcesEndpoint(new Uri($_ENV[self::ENV_ENDPOINT_RESOURCES]));
         }
-        if (array_key_exists(self::ENV_LOGOUT_ENDPOINT, $_ENV)) {
-            $this->logoutUri = new Uri($_ENV[self::ENV_LOGOUT_ENDPOINT]);
+        if (array_key_exists(self::ENV_ENDPOINT_LOGOUT, $_ENV)) {
+            $this->logoutUri = new Uri($_ENV[self::ENV_ENDPOINT_LOGOUT]);
         }
     }
 
@@ -413,7 +468,7 @@ class SiitecApi
         if (!empty($continue)) {
             return $this->httpHelper->makeRedirect($continue);
         }
-        return $this->httpHelper->makeRedirect(static::getPlatformUrl('/index.php/usuarios/logout'));
+        return $this->httpHelper->makeRedirect(static::getHomeUrl('usuarios/logout', true));
     }
 
     /**

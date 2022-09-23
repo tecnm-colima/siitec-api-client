@@ -18,7 +18,7 @@ class InscripcionResource extends AbstractResource
      */
     public function getAll(array $params = [])
     {
-        $response = $this->_get('/pagos/procesos/inscripcion', $params);
+        $response = $this->protectedGet('/pagos/procesos/inscripcion', $params);
         return HttpHelper::getContent($response);
     }
 
@@ -27,13 +27,13 @@ class InscripcionResource extends AbstractResource
         if (is_array($id_proceso)) {
             $id_proceso = join('+', $id_proceso);
         }
-        $response = $this->_get("/pagos/procesos/inscripcion/{$id_proceso}", $params);
+        $response = $this->protectedGet("/pagos/procesos/inscripcion/{$id_proceso}", $params);
         return HttpHelper::getContent($response);
     }
 
     public function getCurrent(array $params = [])
     {
-        $response = $this->_get('/pagos/procesos/inscripcion/@current', $params);
+        $response = $this->protectedGet('/pagos/procesos/inscripcion/@current', $params);
         return HttpHelper::getContent($response);
     }
 }

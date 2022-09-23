@@ -18,7 +18,7 @@ class PeriodosResource extends AbstractResource
     public function getAll(array $params = [])
     {
         $this->requiresAccessToken(false);
-        $response = $this->_get('/escolares/periodos', $params);
+        $response = $this->protectedGet('/escolares/periodos', $params);
         return HttpHelper::getContent($response);
     }
 
@@ -28,14 +28,14 @@ class PeriodosResource extends AbstractResource
             $periodo_id = join('+', $periodo_id);
         }
         $this->requiresAccessToken(false);
-        $response = $this->_get("/escolares/periodos/{$periodo_id}", $params);
+        $response = $this->protectedGet("/escolares/periodos/{$periodo_id}", $params);
         return HttpHelper::getContent($response);
     }
 
     public function getCurrent(array $params = [])
     {
         $this->requiresAccessToken(false);
-        $response = $this->_get('/escolares/periodos/@current', $params);
+        $response = $this->protectedGet('/escolares/periodos/@current', $params);
         return HttpHelper::getContent($response);
     }
 }

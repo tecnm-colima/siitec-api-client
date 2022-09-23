@@ -21,7 +21,7 @@ class UsuariosResource extends AbstractResource
             $id = join('+', $id);
         }
         $this->requiresClientAccessToken(true);
-        $response = $this->_get("/app/usuarios/{$id}", $params);
+        $response = $this->protectedGet("/app/usuarios/{$id}", $params);
         return HttpHelper::getContent($response);
     }
 
@@ -41,7 +41,7 @@ class UsuariosResource extends AbstractResource
     public function find(array $params = [])
     {
         $this->requiresClientAccessToken(true);
-        $response = $this->_get('/app/usuarios', $params);
+        $response = $this->protectedGet('/app/usuarios', $params);
         return HttpHelper::getContent($response);
     }
 
@@ -52,7 +52,7 @@ class UsuariosResource extends AbstractResource
     {
         $this->requiresClientAccessToken(true);
         $params['q'] = $term;
-        $response = $this->_get('/app/usuarios', $params);
+        $response = $this->protectedGet('/app/usuarios', $params);
         return HttpHelper::getContent($response);
     }
 
@@ -65,7 +65,7 @@ class UsuariosResource extends AbstractResource
     {
         $this->requiresClientAccessToken(true);
         $params['matricula'] = $matricula;
-        $response = $this->_get('/app/usuarios', $params);
+        $response = $this->protectedGet('/app/usuarios', $params);
         return HttpHelper::getContent($response);
     }
 
@@ -78,7 +78,7 @@ class UsuariosResource extends AbstractResource
     {
         $this->requiresClientAccessToken(true);
         $params['curp'] = $curp;
-        $response = $this->_get('/app/usuarios', $params);
+        $response = $this->protectedGet('/app/usuarios', $params);
         return HttpHelper::getContent($response);
     }
 
@@ -89,7 +89,7 @@ class UsuariosResource extends AbstractResource
     public function createAspirante(Aspirante $aspirante)
     {
         $this->requiresClientAccessToken(true);
-        $response = $this->_post('/app/usuarios/aspirantes', $aspirante, MediaTypes::APPLICATION_JSON);
+        $response = $this->protectedPost('/app/usuarios/aspirantes', $aspirante, MediaTypes::APPLICATION_JSON);
         return HttpHelper::getContent($response);
     }
 }

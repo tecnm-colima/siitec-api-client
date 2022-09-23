@@ -18,7 +18,7 @@ class ReinscripcionResource extends AbstractResource
      */
     public function getAll(array $params = [])
     {
-        $response = $this->_get('/pagos/procesos/reinscripcion', $params);
+        $response = $this->protectedGet('/pagos/procesos/reinscripcion', $params);
         return HttpHelper::getContent($response);
     }
 
@@ -27,13 +27,13 @@ class ReinscripcionResource extends AbstractResource
         if (is_array($id_proceso)) {
             $id_proceso = join('+', $id_proceso);
         }
-        $response = $this->_get("/pagos/procesos/reinscripcion/{$id_proceso}", $params);
+        $response = $this->protectedGet("/pagos/procesos/reinscripcion/{$id_proceso}", $params);
         return HttpHelper::getContent($response);
     }
 
     public function getCurrent(array $params = [])
     {
-        $response = $this->_get('/pagos/procesos/reinscripcion/@current', $params);
+        $response = $this->protectedGet('/pagos/procesos/reinscripcion/@current', $params);
         return HttpHelper::getContent($response);
     }
 }

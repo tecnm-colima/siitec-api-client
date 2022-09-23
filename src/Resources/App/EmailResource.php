@@ -18,7 +18,7 @@ class EmailResource extends AbstractResource
     public function send(Email $email)
     {
         $this->requiresClientAccessToken(true);
-        $response = $this->_post('/app/email', $email, MediaTypes::APPLICATION_JSON);
+        $response = $this->protectedPost('/app/email', $email, MediaTypes::APPLICATION_JSON);
         return HttpHelper::getContent($response);
     }
 }

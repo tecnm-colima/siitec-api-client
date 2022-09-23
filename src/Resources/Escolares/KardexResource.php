@@ -43,7 +43,9 @@ class KardexResource extends AbstractResource
             $duplicate[$key] = ($duplicate[$key] ?? 0) + 1;
         }
 
-        $duplicate = array_keys(array_filter($duplicate, function($v) { return $v > 1; }));
+        $duplicate = array_keys(array_filter($duplicate, function ($v) {
+            return $v > 1;
+        }));
 
         if (count($duplicate) > 0) {
             throw new RuntimeException(
@@ -51,13 +53,16 @@ class KardexResource extends AbstractResource
             );
         }
 
-        $response = $this->_post("/escolares/kardex",
+        $response = $this->protectedPost(
+            "/escolares/kardex",
             array(
                 "periodo_id" => $periodo_id,
                 "overwrite" => $overwrite,
                 "kardex" => $kardex
-            ), MediaTypes::APPLICATION_JSON);
-        
+            ),
+            MediaTypes::APPLICATION_JSON
+        );
+
         return HttpHelper::getContent($response);
     }
 }
