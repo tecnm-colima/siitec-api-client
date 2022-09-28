@@ -391,7 +391,8 @@ class SiitecApi
             );
         }
         $this->oauth2Client->handleCallback($request);
-        $this->retrievePerfil();
+        // Disabled to prevent loop in api-server self referencing.
+        // $this->retrievePerfil();
 
         $uriFactory = $this->httpHelper->getHttpFactoryManager()->getUriFactory();
         $redirUri = $this->getRedir(UriHelper::getSiteUrl());
@@ -413,6 +414,9 @@ class SiitecApi
 
     private function loadPerfilFromSession()
     {
+        if (!array_key_exists($this->sessionPerfilKey, $_SESSION)) {
+            $this->retrievePerfil();
+        }
         if (array_key_exists($this->sessionPerfilKey, $_SESSION) && is_object($_SESSION[$this->sessionPerfilKey])) {
             $this->perfil = $_SESSION[$this->sessionPerfilKey];
         }
