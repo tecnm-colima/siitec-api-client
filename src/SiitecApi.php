@@ -444,6 +444,9 @@ class SiitecApi
      */
     public function isLoggedIn()
     {
+        if (is_null($this->getOAuth2Client()->getOwnerAccessToken())) {
+            return false;
+        }
         return !is_null($this->getPerfil());
     }
 
