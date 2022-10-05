@@ -84,8 +84,8 @@ class SiitecApi
     {
         static $homeBase = null;
         if (!isset($homeBase)) {
-            $homeBase =
-                rtrim($_ENV[self::ENV_SIITEC_HOME], '/') ?:
+            $homeBase = isset($_ENV[self::ENV_SIITEC_HOME]) ?
+                rtrim($_ENV[self::ENV_SIITEC_HOME], '/') :
                 self::DEFAULT_ENDPOINT_HOME_BASE;
         }
         return $withIndex ?
