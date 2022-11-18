@@ -24,7 +24,7 @@ abstract class AbstractResource
         $this->cliente = $cliente ?? SiitecApi::getLastInstance();
         $this->requiresAccessToken = false;
         $this->requiresClientAccessToken = false;
-        $this->httpHelper = new HttpHelper($cliente->getHttpFactoryManager());
+        $this->httpHelper = new HttpHelper($this->cliente->getHttpFactoryManager());
     }
 
     protected function requiresAccessToken(bool $requires = true)
