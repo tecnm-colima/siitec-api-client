@@ -97,7 +97,7 @@ class SiitecOAuth2Client implements
             throw new RuntimeException(
                 is_array($error) && isset($error['message']) ?
                 $error['message'] :
-                'Failed to write Siitec API Client Access Token file.'
+                'Failed to open Siitec API Client Access Token file.'
             );
         }
         $written = fwrite($file, json_encode($accessToken));
