@@ -13,6 +13,7 @@
     },
     "require": {
         "francerz/http": "^0.3",
+        "francerz/json-tools": "^0.1.0",
         "francerz/oauth2-client": "^0.3",
         "itcolima/siitec-api-core": "^0.1",
         "psr/http-client": "^1.0"

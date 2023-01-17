@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5bfa99a29a11679787e279c9ee4f38df",
+    "content-hash": "3f7161c042b3f4e93fb7665f78679992",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -104,16 +104,16 @@
         },
         {
             "name": "francerz/http",
-            "version": "v0.3.13",
+            "version": "v0.3.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/francerz/php-http.git",
-                "reference": "6e57b00ee87322dc58d9d98f7a4e66dbfa6c6b40"
+                "reference": "7910d93f93a1a64cd5a9e7628949b065ab50c84c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/francerz/php-http/zipball/6e57b00ee87322dc58d9d98f7a4e66dbfa6c6b40",
-                "reference": "6e57b00ee87322dc58d9d98f7a4e66dbfa6c6b40",
+                "url": "https://api.github.com/repos/francerz/php-http/zipball/7910d93f93a1a64cd5a9e7628949b065ab50c84c",
+                "reference": "7910d93f93a1a64cd5a9e7628949b065ab50c84c",
                 "shasum": ""
             },
             "require": {
@@ -137,22 +137,22 @@
             "description": "Basic HTTP client",
             "support": {
                 "issues": "https://github.com/francerz/php-http/issues",
-                "source": "https://github.com/francerz/php-http/tree/v0.3.13"
+                "source": "https://github.com/francerz/php-http/tree/v0.3.14"
             },
-            "time": "2022-02-17T15:59:06+00:00"
+            "time": "2022-10-10T17:19:51+00:00"
         },
         {
             "name": "francerz/http-utils",
-            "version": "v0.2.48",
+            "version": "v0.2.51",
             "source": {
                 "type": "git",
                 "url": "https://github.com/francerz/php-http-utils.git",
-                "reference": "5461eb84550ddae19b2f646480813357170baa34"
+                "reference": "dd59b34001e6d52c3b1a9eac09ed56cab41cd050"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/francerz/php-http-utils/zipball/5461eb84550ddae19b2f646480813357170baa34",
-                "reference": "5461eb84550ddae19b2f646480813357170baa34",
+                "url": "https://api.github.com/repos/francerz/php-http-utils/zipball/dd59b34001e6d52c3b1a9eac09ed56cab41cd050",
+                "reference": "dd59b34001e6d52c3b1a9eac09ed56cab41cd050",
                 "shasum": ""
             },
             "require": {
@@ -195,22 +195,56 @@
             ],
             "support": {
                 "issues": "https://github.com/francerz/php-http-utils/issues",
-                "source": "https://github.com/francerz/php-http-utils/tree/v0.2.48"
+                "source": "https://github.com/francerz/php-http-utils/tree/v0.2.51"
             },
-            "time": "2022-07-22T18:51:35+00:00"
+            "time": "2022-11-15T19:08:36+00:00"
         },
         {
-            "name": "francerz/oauth2-client",
-            "version": "v0.3.1",
+            "name": "francerz/json-tools",
+            "version": "v0.1.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/francerz/php-oauth2-client.git",
-                "reference": "521e412e4292d1cceffbc661c1d4f1b87c7977c5"
+                "url": "https://github.com/francerz/php-json-tools.git",
+                "reference": "97e6fbe49d2f0fafa5e328961af921074ad634c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/francerz/php-oauth2-client/zipball/521e412e4292d1cceffbc661c1d4f1b87c7977c5",
-                "reference": "521e412e4292d1cceffbc661c1d4f1b87c7977c5",
+                "url": "https://api.github.com/repos/francerz/php-json-tools/zipball/97e6fbe49d2f0fafa5e328961af921074ad634c4",
+                "reference": "97e6fbe49d2f0fafa5e328961af921074ad634c4",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Francerz\\JsonTools\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "ISC"
+            ],
+            "description": "Tools for encoding and decoding json objects.",
+            "support": {
+                "issues": "https://github.com/francerz/php-json-tools/issues",
+                "source": "https://github.com/francerz/php-json-tools/tree/v0.1.0"
+            },
+            "time": "2022-12-06T16:09:36+00:00"
+        },
+        {
+            "name": "francerz/oauth2-client",
+            "version": "v0.3.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/francerz/php-oauth2-client.git",
+                "reference": "2ab90e03307ebc2777fcb7c73c97f4c00aabe4ec"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/francerz/php-oauth2-client/zipball/2ab90e03307ebc2777fcb7c73c97f4c00aabe4ec",
+                "reference": "2ab90e03307ebc2777fcb7c73c97f4c00aabe4ec",
                 "shasum": ""
             },
             "require": {
@@ -240,9 +274,9 @@
             ],
             "support": {
                 "issues": "https://github.com/francerz/php-oauth2-client/issues",
-                "source": "https://github.com/francerz/php-oauth2-client/tree/v0.3.1"
+                "source": "https://github.com/francerz/php-oauth2-client/tree/v0.3.3"
             },
-            "time": "2022-02-17T19:55:08+00:00"
+            "time": "2022-12-18T03:03:47+00:00"
         },
         {
             "name": "francerz/oauth2-core",
@@ -326,35 +360,37 @@
         },
         {
             "name": "itcolima/siitec-api-core",
-            "version": "v0.1.1",
+            "version": "v0.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnm-colima/siitec-api-core.git",
-                "reference": "6788505092090b1ab6f44c3f59c78dad946b7b0d"
+                "reference": "ffaabcba574681b360dc43d973c484b5537406fd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnm-colima/siitec-api-core/zipball/6788505092090b1ab6f44c3f59c78dad946b7b0d",
-                "reference": "6788505092090b1ab6f44c3f59c78dad946b7b0d",
+                "url": "https://api.github.com/repos/tecnm-colima/siitec-api-core/zipball/ffaabcba574681b360dc43d973c484b5537406fd",
+                "reference": "ffaabcba574681b360dc43d973c484b5537406fd",
                 "shasum": ""
             },
             "require": {
-                "francerz/enum": "^0.1.1"
+                "francerz/enum": "^0.1.1",
+                "francerz/php-power-data": "^0.1.28",
+                "psr/http-message": "^1.0"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
                     "ITColima\\SiitecApi\\Core\\": "src/Core",
-                    "ITColima\\SiitecApi\\Models\\": "src/Models"
+                    "ITColima\\SiitecApi\\Model\\": "src/Model"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "description": "Nucleo de valores para la API de SIITEC.",
             "support": {
                 "issues": "https://github.com/tecnm-colima/siitec-api-core/issues",
-                "source": "https://github.com/tecnm-colima/siitec-api-core/tree/v0.1.1"
+                "source": "https://github.com/tecnm-colima/siitec-api-core/tree/v0.1.5"
             },
-            "time": "2022-09-13T14:57:17+00:00"
+            "time": "2023-01-17T16:16:08+00:00"
         },
         {
             "name": "psr/http-client",
@@ -520,30 +556,30 @@
     "packages-dev": [
         {
             "name": "doctrine/instantiator",
-            "version": "1.4.1",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/instantiator.git",
-                "reference": "10dcfce151b967d20fde1b34ae6640712c3891bc"
+                "reference": "0a0fa9780f5d4e507415a065172d26a98d02047b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/10dcfce151b967d20fde1b34ae6640712c3891bc",
-                "reference": "10dcfce151b967d20fde1b34ae6640712c3891bc",
+                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/0a0fa9780f5d4e507415a065172d26a98d02047b",
+                "reference": "0a0fa9780f5d4e507415a065172d26a98d02047b",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.1 || ^8.0"
             },
             "require-dev": {
-                "doctrine/coding-standard": "^9",
+                "doctrine/coding-standard": "^9 || ^11",
                 "ext-pdo": "*",
                 "ext-phar": "*",
                 "phpbench/phpbench": "^0.16 || ^1",
                 "phpstan/phpstan": "^1.4",
                 "phpstan/phpstan-phpunit": "^1",
                 "phpunit/phpunit": "^7.5 || ^8.5 || ^9.5",
-                "vimeo/psalm": "^4.22"
+                "vimeo/psalm": "^4.30 || ^5.4"
             },
             "type": "library",
             "autoload": {
@@ -570,7 +606,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/instantiator/issues",
-                "source": "https://github.com/doctrine/instantiator/tree/1.4.1"
+                "source": "https://github.com/doctrine/instantiator/tree/1.5.0"
             },
             "funding": [
                 {
@@ -586,7 +622,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-03-03T08:28:38+00:00"
+            "time": "2022-12-30T00:15:36+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -1057,16 +1093,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "8.5.29",
+            "version": "8.5.31",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "e8c563c47a9a303662955518ca532b022b337f4d"
+                "reference": "33c126b09a42de5c99e5e8032b54e8221264a74e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/e8c563c47a9a303662955518ca532b022b337f4d",
-                "reference": "e8c563c47a9a303662955518ca532b022b337f4d",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/33c126b09a42de5c99e5e8032b54e8221264a74e",
+                "reference": "33c126b09a42de5c99e5e8032b54e8221264a74e",
                 "shasum": ""
             },
             "require": {
@@ -1085,10 +1121,10 @@
                 "phpunit/php-file-iterator": "^2.0.4",
                 "phpunit/php-text-template": "^1.2.1",
                 "phpunit/php-timer": "^2.1.2",
-                "sebastian/comparator": "^3.0.2",
+                "sebastian/comparator": "^3.0.5",
                 "sebastian/diff": "^3.0.2",
                 "sebastian/environment": "^4.2.3",
-                "sebastian/exporter": "^3.1.2",
+                "sebastian/exporter": "^3.1.5",
                 "sebastian/global-state": "^3.0.0",
                 "sebastian/object-enumerator": "^3.0.3",
                 "sebastian/resource-operations": "^2.0.1",
@@ -1134,7 +1170,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/8.5.29"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/8.5.31"
             },
             "funding": [
                 {
@@ -1144,9 +1180,13 @@
                 {
                     "url": "https://github.com/sebastianbergmann",
                     "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/phpunit/phpunit",
+                    "type": "tidelift"
                 }
             ],
-            "time": "2022-08-22T13:59:39+00:00"
+            "time": "2022-10-28T05:57:37+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
