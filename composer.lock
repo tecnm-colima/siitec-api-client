@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3f7161c042b3f4e93fb7665f78679992",
+    "content-hash": "1743047546d348fafed16b67e1ec04fd",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -360,16 +360,16 @@
         },
         {
             "name": "itcolima/siitec-api-core",
-            "version": "v0.1.5",
+            "version": "v0.1.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnm-colima/siitec-api-core.git",
-                "reference": "ffaabcba574681b360dc43d973c484b5537406fd"
+                "reference": "6b44b3b936d18348bc1c30bee9ddd020973dcfa3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnm-colima/siitec-api-core/zipball/ffaabcba574681b360dc43d973c484b5537406fd",
-                "reference": "ffaabcba574681b360dc43d973c484b5537406fd",
+                "url": "https://api.github.com/repos/tecnm-colima/siitec-api-core/zipball/6b44b3b936d18348bc1c30bee9ddd020973dcfa3",
+                "reference": "6b44b3b936d18348bc1c30bee9ddd020973dcfa3",
                 "shasum": ""
             },
             "require": {
@@ -388,9 +388,9 @@
             "description": "Nucleo de valores para la API de SIITEC.",
             "support": {
                 "issues": "https://github.com/tecnm-colima/siitec-api-core/issues",
-                "source": "https://github.com/tecnm-colima/siitec-api-core/tree/v0.1.5"
+                "source": "https://github.com/tecnm-colima/siitec-api-core/tree/v0.1.9"
             },
-            "time": "2023-01-17T16:16:08+00:00"
+            "time": "2023-02-23T19:33:34+00:00"
         },
         {
             "name": "psr/http-client",
@@ -1093,16 +1093,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "8.5.31",
+            "version": "8.5.32",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "33c126b09a42de5c99e5e8032b54e8221264a74e"
+                "reference": "375686930d05c9fd7d20f6e5fc38121e8d7a9d55"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/33c126b09a42de5c99e5e8032b54e8221264a74e",
-                "reference": "33c126b09a42de5c99e5e8032b54e8221264a74e",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/375686930d05c9fd7d20f6e5fc38121e8d7a9d55",
+                "reference": "375686930d05c9fd7d20f6e5fc38121e8d7a9d55",
                 "shasum": ""
             },
             "require": {
@@ -1170,7 +1170,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/8.5.31"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/8.5.32"
             },
             "funding": [
                 {
@@ -1186,7 +1186,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-10-28T05:57:37+00:00"
+            "time": "2023-01-26T08:30:25+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",

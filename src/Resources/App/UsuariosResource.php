@@ -4,8 +4,10 @@ namespace ITColima\SiitecApi\Resources\App;
 
 use Francerz\Http\Utils\Constants\MediaTypes;
 use Francerz\Http\Utils\HttpHelper;
+use Francerz\JsonTools\JsonEncoder;
 use ITColima\SiitecApi\AbstractResource;
 use ITColima\SiitecApi\Model\App\Usuarios\Aspirante;
+use ITColima\SiitecApi\Model\App\Usuarios\Empleado;
 use ITColima\SiitecApi\Model\Perfil;
 
 class UsuariosResource extends AbstractResource
@@ -91,5 +93,16 @@ class UsuariosResource extends AbstractResource
         $this->requiresClientAccessToken(true);
         $response = $this->protectedPost('/app/usuarios/aspirantes', $aspirante, MediaTypes::APPLICATION_JSON);
         return HttpHelper::getContent($response);
+    }
+
+    /**
+     * @param Empleado $empleado
+     * @return Empleado
+     */
+    public function createEmpleado(Empleado $empleado)
+    {
+        $this->requiresClientAccessToken(true);
+        $response = $this->protectedPost('/app/usuarios/empleados', $empleado, MediaTypes::APPLICATION_JSON);
+        return JsonEncoder::decode((string)$response->getBody(), Empleado::class);
     }
 }
