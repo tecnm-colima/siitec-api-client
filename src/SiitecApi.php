@@ -146,7 +146,7 @@ class SiitecApi
         $server->emitResponse($response);
     }
 
-    public static function redirectTo($location, int $code = StatusCodeInterface::STATUS_TEMPORARY_REDIRECT)
+    public static function redirectTo($location, int $code = StatusCodeInterface::STATUS_FOUND)
     {
         $response = new Response();
         return $response
@@ -199,9 +199,9 @@ class SiitecApi
         if (array_key_exists(self::ENV_SIITEC_API, $_ENV)) {
             $this->setResourcesEndpoint(new Uri($_ENV[self::ENV_SIITEC_API]));
         }
-        if (array_key_exists(self::ENV_ENDPOINT_LOGOUT, $_ENV)) {
-            $this->logoutUri = new Uri($_ENV[self::ENV_ENDPOINT_LOGOUT]);
-        }
+        // if (array_key_exists(self::ENV_ENDPOINT_LOGOUT, $_ENV)) {
+        //     $this->logoutUri = new Uri($_ENV[self::ENV_ENDPOINT_LOGOUT]);
+        // }
     }
 
     private function initSessions()
