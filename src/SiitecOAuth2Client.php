@@ -100,7 +100,7 @@ class SiitecOAuth2Client implements
                 'Failed to open Siitec API Client Access Token file.'
             );
         }
-        $written = fwrite($file, json_encode($accessToken));
+        $written = fwrite($file, serialize($accessToken));
         if ($written === false) {
             $error = error_get_last();
             throw new RuntimeException(
@@ -118,9 +118,10 @@ class SiitecOAuth2Client implements
         if (!file_exists($filepath)) {
             return null;
         }
-        $jsonString = \file_get_contents($filepath);
+        $serializedToken = \file_get_contents($filepath);
         try {
-            return AccessToken::fromJsonString($jsonString);
+            $token = @unserialize($serializedToken);
+            return $token === false ? null : $token;
         } catch (Exception $ex) {
             return null;
         }
