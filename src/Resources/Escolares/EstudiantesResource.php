@@ -27,7 +27,7 @@ class EstudiantesResource extends AbstractResource
 
     public function getByNumControl(string $num_control, array $params = [])
     {
-        $this->requiresClientAccessToken();
+        $this->requiresClientAccessToken(true);
         $params['num_control'] = $num_control;
         $response = $this->protectedGet('/escolares/estudiantes', $params);
         $output = HttpHelper::getContent($response);
@@ -39,7 +39,7 @@ class EstudiantesResource extends AbstractResource
 
     public function getById($id, array $params = [])
     {
-        $this->requiresClientAccessToken();
+        $this->requiresClientAccessToken(true);
         $id = is_array($id) ? implode('+', $id) : $id;
         $response = $this->protectedGet("/escolares/estudiantes/{$id}", $params);
         $output = HttpHelper::getContent($response);
@@ -51,7 +51,7 @@ class EstudiantesResource extends AbstractResource
 
     public function getByUsuarioId($id, array $params = [])
     {
-        $this->requiresClientAccessToken();
+        $this->requiresClientAccessToken(true);
         $params['usuario_id'] = is_array($id) ? implode('+', $id) : $id;
         $response = $this->protectedGet("/escolares/estudiantes", $params);
         $output = HttpHelper::getContent($response);
@@ -69,7 +69,7 @@ class EstudiantesResource extends AbstractResource
      */
     public function putDocumento($id_estudiante, $id_documento, EstudianteDocumento $data)
     {
-        $this->requiresClientAccessToken();
+        $this->requiresClientAccessToken(true);
         $response = $this->protectedPut(
             "/escolares/estudiantes/{$id_estudiante}/documentos/{$id_documento}",
             $data,
@@ -90,7 +90,7 @@ class EstudiantesResource extends AbstractResource
                 throw new InvalidArgumentException("array \$documentos MUST contain only EstudianteDocumento objects.");
             }
         }
-        $this->requiresClientAccessToken();
+        $this->requiresClientAccessToken(true);
         $response = $this->protectedPost(
             "/escolares/estudiantes/{$id_estudiante}/documentos",
             $documentos,
@@ -109,7 +109,7 @@ class EstudiantesResource extends AbstractResource
                 throw new InvalidArgumentException("array \$documentos MUST contain only EstudianteDocumento objects.");
             }
         }
-        $this->requiresClientAccessToken();
+        $this->requiresClientAccessToken(true);
         $response = $this->protectedPost(
             "/escolares/estudiantes/documentos/batch",
             $documentos,
@@ -125,7 +125,7 @@ class EstudiantesResource extends AbstractResource
         }
         $data = base64_encode(file_get_contents($filepath));
 
-        $this->requiresClientAccessToken();
+        $this->requiresClientAccessToken(true);
         $response = $this->protectedPut(
             "/escolares/estudiantes/{$id_estudiante}/foto",
             $data,

@@ -18,6 +18,7 @@ class PreinscripcionResource extends AbstractResource
      */
     public function getAll(array $params = [])
     {
+        $this->requiresClientAccessToken(true);
         $response = $this->protectedGet('/pagos/procesos/preinscripcion', $params);
         return HttpHelper::getContent($response);
     }
@@ -27,12 +28,14 @@ class PreinscripcionResource extends AbstractResource
         if (is_array($id_proceso)) {
             $id_proceso = join('+', $id_proceso);
         }
+        $this->requiresClientAccessToken(true);
         $response = $this->protectedGet("/pagos/procesos/preinscripcion/{$id_proceso}", $params);
         return HttpHelper::getContent($response);
     }
 
     public function getCurrent(array $params = [])
     {
+        $this->requiresClientAccessToken(true);
         $response = $this->protectedGet('/pagos/procesos/preinscripcion/@current', $params);
         return HttpHelper::getContent($response);
     }

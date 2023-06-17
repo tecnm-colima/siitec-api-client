@@ -11,7 +11,7 @@ class ProcesosResource extends AbstractResource
 {
     public function getPagos($id_proceso, array $params = [])
     {
-        $this->requiresClientAccessToken();
+        $this->requiresClientAccessToken(true);
         $response = $this->protectedGet("/pagos/procesos/{$id_proceso}/pagos", $params);
         $rows = HttpHelper::getContent($response);
         foreach ($rows as &$row) {
@@ -22,6 +22,7 @@ class ProcesosResource extends AbstractResource
 
     public function getById($id_proceso, array $params = [])
     {
+        $this->requiresClientAccessToken(true);
         $response = $this->protectedGet("/pagos/procesos/{$id_proceso}", $params);
         return HttpHelper::getContent($response);
     }

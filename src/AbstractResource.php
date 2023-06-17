@@ -15,21 +15,21 @@ use Psr\Http\Message\ResponseInterface;
 abstract class AbstractResource
 {
     private $cliente;
-    private $requiresAccessToken;
+    private $requiresOwnerAccessToken;
     private $requiresClientAccessToken;
     private $httpHelper;
 
     public function __construct(?SiitecApi $cliente = null)
     {
         $this->cliente = $cliente ?? SiitecApi::getLastInstance();
-        $this->requiresAccessToken = false;
-        $this->requiresClientAccessToken = false;
+        $this->requiresClientAccessToken = true;
+        $this->requiresOwnerAccessToken = false;
         $this->httpHelper = new HttpHelper($this->cliente->getHttpFactoryManager());
     }
 
-    protected function requiresAccessToken(bool $requires = true)
+    protected function requiresOwnerAccessToken(bool $requires = true)
     {
-        $this->requiresAccessToken = $requires;
+        $this->requiresOwnerAccessToken = $requires;
     }
 
     protected function requiresClientAccessToken(bool $requires = true)
@@ -55,10 +55,11 @@ abstract class AbstractResource
 
         $requestFactory = $this->cliente->getHttpFactoryManager()->getRequestFactory();
         $request = $requestFactory->createRequest($method, $uri);
-        if ($this->requiresAccessToken) {
-            $request = $this->cliente->getOAuth2Client()->bindOwnerAccessToken($request);
-        } elseif ($this->requiresClientAccessToken) {
+        if ($this->requiresClientAccessToken) {
             $request = $this->cliente->getOAuth2Client()->bindClientAccessToken($request);
+        }
+        if ($this->requiresOwnerAccessToken) {
+            $request = $this->cliente->getOAuth2Client()->bindOwnerAccessToken($request);
         }
 
         if (isset($content)) {

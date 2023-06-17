@@ -20,7 +20,7 @@ class PeriodosResource extends AbstractResource
      */
     public function getAll(array $params = [])
     {
-        $this->requiresAccessToken(false);
+        $this->requiresClientAccessToken(true);
         $response = $this->protectedGet('/escolares/periodos', $params);
         return JsonEncoder::decode((string)$response->getBody(), Periodo::class);
     }
@@ -30,7 +30,7 @@ class PeriodosResource extends AbstractResource
         if (is_array($periodo_id)) {
             $periodo_id = join('+', $periodo_id);
         }
-        $this->requiresAccessToken(false);
+        $this->requiresClientAccessToken(true);
         $response = $this->protectedGet("/escolares/periodos/{$periodo_id}", $params);
         return HttpHelper::getContent($response);
     }
@@ -41,7 +41,7 @@ class PeriodosResource extends AbstractResource
      */
     public function getCurrent(array $params = [])
     {
-        $this->requiresAccessToken(false);
+        $this->requiresClientAccessToken(true);
         $response = $this->protectedGet('/escolares/periodos/@current', $params);
         return JsonEncoder::decode((string)$response->getBody(), Periodo::class);
     }
@@ -53,7 +53,7 @@ class PeriodosResource extends AbstractResource
      */
     public function getCarrera($periodo_id, $carrera_id)
     {
-        $this->requiresAccessToken(false);
+        $this->requiresClientAccessToken(true);
         $response = $this->protectedGet("/escolares/periodos/{$periodo_id}/carreras/{$carrera_id}");
         return JsonEncoder::decode((string)$response->getBody(), PeriodoCarrera::class);
     }

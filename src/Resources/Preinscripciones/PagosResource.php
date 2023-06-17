@@ -15,7 +15,7 @@ class PagosResource extends AbstractResource
      */
     public function put(Pago $pago)
     {
-        $this->requiresClientAccessToken();
+        $this->requiresClientAccessToken(true);
         $response = $this->protectedPut("/preinscripciones/pagos/{$pago->id_aspirante}/{$pago->id_periodo}", null);
         return $response;
     }

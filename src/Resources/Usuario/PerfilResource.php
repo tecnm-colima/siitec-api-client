@@ -15,7 +15,8 @@ class PerfilResource extends AbstractResource
      */
     public function getOwn()
     {
-        $this->requiresAccessToken(true);
+        $this->requiresClientAccessToken(true);
+        $this->requiresOwnerAccessToken(true);
         $response = $this->protectedGet('/usuarios/perfil/own');
         return JsonEncoder::decode((string)$response->getBody(), Perfil::class);
     }

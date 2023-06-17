@@ -18,6 +18,7 @@ class ReinscripcionResource extends AbstractResource
      */
     public function getAll(array $params = [])
     {
+        $this->requiresClientAccessToken(true);
         $response = $this->protectedGet('/pagos/procesos/reinscripcion', $params);
         return HttpHelper::getContent($response);
     }
@@ -27,12 +28,14 @@ class ReinscripcionResource extends AbstractResource
         if (is_array($id_proceso)) {
             $id_proceso = join('+', $id_proceso);
         }
+        $this->requiresClientAccessToken(true);
         $response = $this->protectedGet("/pagos/procesos/reinscripcion/{$id_proceso}", $params);
         return HttpHelper::getContent($response);
     }
 
     public function getCurrent(array $params = [])
     {
+        $this->requiresClientAccessToken(true);
         $response = $this->protectedGet('/pagos/procesos/reinscripcion/@current', $params);
         return HttpHelper::getContent($response);
     }

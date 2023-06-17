@@ -16,6 +16,7 @@ class PeriodosResource extends AbstractResource
      */
     public function getAll(array $params = [])
     {
+        $this->requiresClientAccessToken(true);
         $response = $this->protectedGet('/preinscripciones/periodos', $params);
         return HttpHelper::getContent($response);
     }
@@ -34,6 +35,7 @@ class PeriodosResource extends AbstractResource
         if (is_array($periodo_id)) {
             $periodo_id = join('+', $periodo_id);
         }
+        $this->requiresClientAccessToken(true);
         $response = $this->protectedGet("/preinscripciones/periodos/{$periodo_id}", $params);
         return HttpHelper::getContent($response);
     }
