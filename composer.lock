@@ -235,16 +235,16 @@
         },
         {
             "name": "francerz/oauth2-client",
-            "version": "v0.3.3",
+            "version": "v0.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/francerz/php-oauth2-client.git",
-                "reference": "2ab90e03307ebc2777fcb7c73c97f4c00aabe4ec"
+                "reference": "54f8f56839fb6fce12937a8dbc14c202943f2712"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/francerz/php-oauth2-client/zipball/2ab90e03307ebc2777fcb7c73c97f4c00aabe4ec",
-                "reference": "2ab90e03307ebc2777fcb7c73c97f4c00aabe4ec",
+                "url": "https://api.github.com/repos/francerz/php-oauth2-client/zipball/54f8f56839fb6fce12937a8dbc14c202943f2712",
+                "reference": "54f8f56839fb6fce12937a8dbc14c202943f2712",
                 "shasum": ""
             },
             "require": {
@@ -274,9 +274,9 @@
             ],
             "support": {
                 "issues": "https://github.com/francerz/php-oauth2-client/issues",
-                "source": "https://github.com/francerz/php-oauth2-client/tree/v0.3.3"
+                "source": "https://github.com/francerz/php-oauth2-client/tree/v0.3.4"
             },
-            "time": "2022-12-18T03:03:47+00:00"
+            "time": "2023-08-07T18:50:21+00:00"
         },
         {
             "name": "francerz/oauth2-core",
@@ -1522,16 +1522,16 @@
         },
         {
             "name": "sebastian/global-state",
-            "version": "3.0.2",
+            "version": "3.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/global-state.git",
-                "reference": "de036ec91d55d2a9e0db2ba975b512cdb1c23921"
+                "reference": "66783ce213de415b451b904bfef9dda0cf9aeae0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/global-state/zipball/de036ec91d55d2a9e0db2ba975b512cdb1c23921",
-                "reference": "de036ec91d55d2a9e0db2ba975b512cdb1c23921",
+                "url": "https://api.github.com/repos/sebastianbergmann/global-state/zipball/66783ce213de415b451b904bfef9dda0cf9aeae0",
+                "reference": "66783ce213de415b451b904bfef9dda0cf9aeae0",
                 "shasum": ""
             },
             "require": {
@@ -1574,7 +1574,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/global-state/issues",
-                "source": "https://github.com/sebastianbergmann/global-state/tree/3.0.2"
+                "source": "https://github.com/sebastianbergmann/global-state/tree/3.0.3"
             },
             "funding": [
                 {
@@ -1582,7 +1582,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-02-10T06:55:38+00:00"
+            "time": "2023-08-02T09:23:32+00:00"
         },
         {
             "name": "sebastian/object-enumerator",

@@ -458,7 +458,7 @@ class SiitecApi
     public function revoke()
     {
         $this->unsetPerfil();
-        // $this->revokeOwnerAcccessToken();
+        $this->oauth2Client->unsetOwnerAccessToken();
     }
 
     /**

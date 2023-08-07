@@ -176,6 +176,10 @@ class SiitecOAuth2Client implements
         }
     }
 
+    public function discardClientAccessToken()
+    {
+    }
+
     public function loadOwnerAccessToken(): ?AccessToken
     {
         return $_SESSION[$this->keyOwnerAccessToken] ?? null;
@@ -184,6 +188,11 @@ class SiitecOAuth2Client implements
     public function saveOwnerAccessToken(AccessToken $accessToken)
     {
         $_SESSION[$this->keyOwnerAccessToken] = $accessToken;
+    }
+
+    public function discardOwnerAccessToken()
+    {
+        unset($_SESSION[$this->keyOwnerAccessToken]);
     }
 
     public function generateState(): string
