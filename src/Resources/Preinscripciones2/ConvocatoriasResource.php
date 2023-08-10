@@ -10,6 +10,7 @@ class ConvocatoriasResource extends AbstractResource
 {
     public function getInscritos($id_convocatoria)
     {
+        $this->requiresClientAccessToken(true);
         $response = $this->protectedGet("/preinscripciones2/convocatorias/{$id_convocatoria}/inscritos");
         return JsonEncoder::decode((string)$response->getBody(), Inscrito::class);
     }
