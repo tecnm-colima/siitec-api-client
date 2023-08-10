@@ -357,16 +357,16 @@
         },
         {
             "name": "itcolima/siitec-api-core",
-            "version": "v0.1.13",
+            "version": "v0.1.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnm-colima/siitec-api-core.git",
-                "reference": "9949fa75b5dd35f95d2dc71993dc34183a689c71"
+                "reference": "d9f4d754e83d1eb3d8f8f548a5dfe2fd02d11184"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnm-colima/siitec-api-core/zipball/9949fa75b5dd35f95d2dc71993dc34183a689c71",
-                "reference": "9949fa75b5dd35f95d2dc71993dc34183a689c71",
+                "url": "https://api.github.com/repos/tecnm-colima/siitec-api-core/zipball/d9f4d754e83d1eb3d8f8f548a5dfe2fd02d11184",
+                "reference": "d9f4d754e83d1eb3d8f8f548a5dfe2fd02d11184",
                 "shasum": ""
             },
             "require": {
@@ -385,9 +385,9 @@
             "description": "Nucleo de valores para la API de SIITEC.",
             "support": {
                 "issues": "https://github.com/tecnm-colima/siitec-api-core/issues",
-                "source": "https://github.com/tecnm-colima/siitec-api-core/tree/v0.1.13"
+                "source": "https://github.com/tecnm-colima/siitec-api-core/tree/v0.1.14"
             },
-            "time": "2023-07-13T19:10:52+00:00"
+            "time": "2023-08-10T17:53:32+00:00"
         },
         {
             "name": "psr/http-client",
