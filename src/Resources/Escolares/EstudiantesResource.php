@@ -46,7 +46,7 @@ class EstudiantesResource extends AbstractResource
         if (empty($output)) {
             return null;
         }
-        return reset($output);
+        return $output;
     }
 
     public function getByUsuarioId($id, array $params = [])
