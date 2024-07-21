@@ -84,9 +84,7 @@ class SiitecApi
     {
         static $homeBase = null;
         if (!isset($homeBase)) {
-            $homeBase = isset($_ENV[self::ENV_SIITEC_HOME]) ?
-                rtrim($_ENV[self::ENV_SIITEC_HOME], '/') :
-                self::DEFAULT_ENDPOINT_HOME_BASE;
+            $homeBase = rtrim(getenv(self::ENV_SIITEC_HOME) ?: self::DEFAULT_ENDPOINT_HOME_BASE, '/');
         }
         return $withIndex ?
             $homeBase . '/' . self::DEFAULT_ENDPOINT_HOME_INDEX :
@@ -118,9 +116,7 @@ class SiitecApi
     {
         static $pagosUrl = null;
         if (is_null($pagosUrl)) {
-            $pagosUrl = array_key_exists(self::ENV_URI_PAGOS, $_ENV) ?
-                $_ENV[self::ENV_URI_PAGOS] :
-                self::getHomeUrl('/pagos/index.php');
+            $pagosUrl = getenv(self::ENV_URI_PAGOS) ?: self::getHomeUrl('/pagos/index.php');
         }
         $retUrl = $pagosUrl;
         $retUrl .= empty($url) ? '' : '/' . ltrim($url, '/');
@@ -131,9 +127,7 @@ class SiitecApi
     {
         static $docenciaUrl = null;
         if (is_null($docenciaUrl)) {
-            $docenciaUrl = array_key_exists(self::ENV_URI_DOCENCIA, $_ENV) ?
-                $_ENV[self::ENV_URI_DOCENCIA] :
-                self::getHomeUrl('/docencia/index.php');
+            $docenciaUrl = getenv(self::ENV_URI_DOCENCIA) ?: self::getHomeUrl('/docencia/index.php');
         }
         $retUrl = $docenciaUrl;
         $retUrl .= empty($url) ? '' : '/' . ltrim($url, '/');
@@ -193,14 +187,14 @@ class SiitecApi
         $this->setSSLMode(self::SSL_MODE_DEFAULT);
         $this->setResourcesEndpoint(new Uri(self::DEFAULT_RESOURCES_ENDPOINT));
 
-        if (array_key_exists(self::ENV_ENDPOINT_RESOURCES, $_ENV)) {
-            $this->setResourcesEndpoint(new Uri($_ENV[self::ENV_ENDPOINT_RESOURCES]));
+        if (!empty($var = getenv(self::ENV_ENDPOINT_RESOURCES))) {
+            $this->setResourcesEndpoint(new Uri($var));
         }
-        if (array_key_exists(self::ENV_SIITEC_API, $_ENV)) {
-            $this->setResourcesEndpoint(new Uri($_ENV[self::ENV_SIITEC_API]));
+        if (!empty($var = getenv(self::ENV_SIITEC_API))) {
+            $this->setResourcesEndpoint(new Uri($var));
         }
-        // if (array_key_exists(self::ENV_ENDPOINT_LOGOUT, $_ENV)) {
-        //     $this->logoutUri = new Uri($_ENV[self::ENV_ENDPOINT_LOGOUT]);
+        // if (!empty($var = getenv(self::ENV_ENDPOINT_LOGOUT))) {
+        //     $this->logoutUri = new Uri($var);
         // }
     }
 

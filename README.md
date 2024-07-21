@@ -21,13 +21,13 @@ La forma de inicializar la API de SIITEC es mediante la clase
 use ITColima\SiitecApi\SiitecApi;
 
 // Carga manual de las variables de entorno
-$_ENV['SIITEC_API_CLIENT_ID'] = '<client_id>';
-$_ENV['SIITEC_API_CLIENT_SECRET'] = '<client_secret>';
+putenv('SIITEC_API_CLIENT_ID', '<client_id>');
+putenv('SIITEC_API_CLIENT_SECRET', '<client_secret>');
 
 $siitecApi = new SiitecApi();
 ```
 
-> **CARGA AUTOMÁTICA DE LAS VARIABLES DE ENTORNO `$_ENV`**
+> **CARGA AUTOMÁTICA DE LAS VARIABLES DE ENTORNO**
 >
 > La API de SIITEC puede cargar automáticamente las variables de entorno si
 > se utiliza un framework o librería que las cargue desde un archivo `.env`.
