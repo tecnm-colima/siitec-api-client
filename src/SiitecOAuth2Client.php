@@ -51,17 +51,17 @@ class SiitecOAuth2Client implements
 
     private function init()
     {
-        $this->clientId = getenv(SiitecApi::ENV_CLIENT_ID) ?: '';
-        $this->clientSecret = getenv(SiitecApi::ENV_CLIENT_SECRET) ?: '';
+        $this->clientId = SiitecApi::getenv(SiitecApi::ENV_CLIENT_ID) ?? '';
+        $this->clientSecret = SiitecApi::getenv(SiitecApi::ENV_CLIENT_SECRET) ?? '';
 
         $authorizeEndpoint = SiitecApi::DEFAULT_AUTHORIZE_ENDPOINT;
         $tokenEndpoint = SiitecApi::DEFAULT_TOKEN_ENDPOINT;
-        if (!empty(getenv(SiitecApi::ENV_SIITEC_HOME))) {
+        if (!empty(SiitecApi::getenv(SiitecApi::ENV_SIITEC_HOME))) {
             $authorizeEndpoint = SiitecApi::getHomeUrl('/oauth2/authorize', true);
             $tokenEndpoint = SiitecApi::getHomeUrl('/oauth2/token', true);
         }
-        $authorizeEndpoint = getenv(SiitecApi::ENV_ENDPOINT_AUTHORIZE) ?: $authorizeEndpoint;
-        $tokenEndpoint = getenv(SiitecApi::ENV_ENDPOINT_TOKEN) ?: $tokenEndpoint;
+        $authorizeEndpoint = SiitecApi::getenv(SiitecApi::ENV_ENDPOINT_AUTHORIZE) ?? $authorizeEndpoint;
+        $tokenEndpoint = SiitecApi::getenv(SiitecApi::ENV_ENDPOINT_TOKEN) ?? $tokenEndpoint;
 
         $this->authorizeEndpoint = new Uri($authorizeEndpoint);
         $this->tokenEndpoint = new Uri($tokenEndpoint);

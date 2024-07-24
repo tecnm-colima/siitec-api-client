@@ -84,7 +84,10 @@ class SiitecApi
     {
         static $homeBase = null;
         if (!isset($homeBase)) {
-            $homeBase = rtrim(getenv(self::ENV_SIITEC_HOME) ?: self::DEFAULT_ENDPOINT_HOME_BASE, '/');
+            $homeBase = rtrim(
+                static::getenv(self::ENV_SIITEC_HOME) ?? self::DEFAULT_ENDPOINT_HOME_BASE,
+                '/'
+            );
         }
         return $withIndex ?
             $homeBase . '/' . self::DEFAULT_ENDPOINT_HOME_INDEX :
@@ -116,7 +119,9 @@ class SiitecApi
     {
         static $pagosUrl = null;
         if (is_null($pagosUrl)) {
-            $pagosUrl = getenv(self::ENV_URI_PAGOS) ?: self::getHomeUrl('/pagos/index.php');
+            $pagosUrl =
+                static::getenv(self::ENV_URI_PAGOS) ??
+                self::getHomeUrl('/pagos/index.php');
         }
         $retUrl = $pagosUrl;
         $retUrl .= empty($url) ? '' : '/' . ltrim($url, '/');
@@ -127,7 +132,9 @@ class SiitecApi
     {
         static $docenciaUrl = null;
         if (is_null($docenciaUrl)) {
-            $docenciaUrl = getenv(self::ENV_URI_DOCENCIA) ?: self::getHomeUrl('/docencia/index.php');
+            $docenciaUrl =
+                static::getenv(self::ENV_URI_DOCENCIA) ??
+                self::getHomeUrl('/docencia/index.php');
         }
         $retUrl = $docenciaUrl;
         $retUrl .= empty($url) ? '' : '/' . ltrim($url, '/');
@@ -187,13 +194,13 @@ class SiitecApi
         $this->setSSLMode(self::SSL_MODE_DEFAULT);
         $this->setResourcesEndpoint(new Uri(self::DEFAULT_RESOURCES_ENDPOINT));
 
-        if (!empty($var = getenv(self::ENV_ENDPOINT_RESOURCES))) {
+        if (!empty($var = static::getenv(self::ENV_ENDPOINT_RESOURCES))) {
             $this->setResourcesEndpoint(new Uri($var));
         }
-        if (!empty($var = getenv(self::ENV_SIITEC_API))) {
+        if (!empty($var = static::getenv(self::ENV_SIITEC_API))) {
             $this->setResourcesEndpoint(new Uri($var));
         }
-        // if (!empty($var = getenv(self::ENV_ENDPOINT_LOGOUT))) {
+        // if (!empty($var = static::etenv(self::ENV_ENDPOINT_LOGOUT))) {
         //     $this->logoutUri = new Uri($var);
         // }
     }
@@ -489,5 +496,10 @@ class SiitecApi
             return $redirUri;
         }
         return $defaultUri;
+    }
+
+    public static function getenv($varname, $localOnly = false)
+    {
+        return getenv($varname, $localOnly) ?: $_ENV[$varname] ?? null;
     }
 }
