@@ -4,8 +4,10 @@ namespace ITColima\SiitecApi\Resources\Escolares;
 
 use Francerz\Http\Utils\Constants\MediaTypes;
 use Francerz\Http\Utils\HttpHelper;
+use Francerz\JsonTools\JsonEncoder;
 use InvalidArgumentException;
 use ITColima\SiitecApi\AbstractResource;
+use ITColima\SiitecApi\Model\AlumnoContacto;
 use ITColima\SiitecApi\Model\Escolares\EstudianteDocumento;
 
 class EstudiantesResource extends AbstractResource
@@ -132,5 +134,16 @@ class EstudiantesResource extends AbstractResource
             MediaTypes::TEXT_PLAIN
         );
         return $response;
+    }
+
+    /**
+     * @param int|string $id_estudiante
+     * @return AlumnoContacto[]
+     */
+    public function getContactos($id_estudiante)
+    {
+        $this->requiresClientAccessToken(true);
+        $response = $this->protectedGet("/escolares/estudiantes/{$id_estudiante}/contactos");
+        return JsonEncoder::decode((string)$response->getBody(), AlumnoContacto::class);
     }
 }
