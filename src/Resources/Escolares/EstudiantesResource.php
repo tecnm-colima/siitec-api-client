@@ -159,7 +159,7 @@ class EstudiantesResource extends AbstractResource
      */
     public function getDatosEmergencia($id_estudiante)
     {
-        $this->requiresOwnerAccessToken(true);
+        $this->requiresClientAccessToken(true);
         $response = $this->protectedGet("/escolares/estudiantes/{$id_estudiante}/emergencia");
         return JsonEncoder::decode((string)$response->getBody(), EstudianteEmergencia::class);
     }
