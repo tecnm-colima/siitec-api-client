@@ -9,6 +9,7 @@ use InvalidArgumentException;
 use ITColima\SiitecApi\AbstractResource;
 use ITColima\SiitecApi\Model\AlumnoContacto;
 use ITColima\SiitecApi\Model\Escolares\EstudianteDocumento;
+use ITColima\SiitecApi\Model\Escolares\EstudianteEmergencia;
 
 class EstudiantesResource extends AbstractResource
 {
@@ -39,6 +40,11 @@ class EstudiantesResource extends AbstractResource
         return reset($output);
     }
 
+    /**
+     * @param int|string $id
+     * @param array $params
+     * @return Estudiante
+     */
     public function getById($id, array $params = [])
     {
         $this->requiresClientAccessToken(true);
@@ -145,5 +151,16 @@ class EstudiantesResource extends AbstractResource
         $this->requiresClientAccessToken(true);
         $response = $this->protectedGet("/escolares/estudiantes/{$id_estudiante}/contactos");
         return JsonEncoder::decode((string)$response->getBody(), AlumnoContacto::class);
+    }
+
+    /**
+     * @param int|string $id_estudiante
+     * @return EstudianteEmergencia
+     */
+    public function getDatosEmergencia($id_estudiante)
+    {
+        $this->requiresOwnerAccessToken(true);
+        $response = $this->protectedGet("/escolares/estudiantes/{$id_estudiante}/emergencia");
+        return JsonEncoder::decode((string)$response->getBody(), EstudianteEmergencia::class);
     }
 }
