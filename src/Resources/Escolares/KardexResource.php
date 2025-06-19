@@ -65,4 +65,19 @@ class KardexResource extends AbstractResource
 
         return HttpHelper::getContent($response);
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param array $params
+     *  - id_estudiante(int): ID del estudiante.
+     *  - id_periodo(int): ID del periodo escolar.
+     *  - id_asignatura(int): ID de la asignatura.
+     * @return Kardex[]
+     */
+    public function get(array $params = [])
+    {
+        $response = $this->protectedGet('/escolares/kardex', $params);
+        return JsonEncoder::decode((string)$response->getBody(), Kardex::class);
+    }
 }
