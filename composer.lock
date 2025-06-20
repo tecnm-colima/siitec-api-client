@@ -142,16 +142,16 @@
         },
         {
             "name": "francerz/http-utils",
-            "version": "v0.2.55",
+            "version": "v0.2.66",
             "source": {
                 "type": "git",
                 "url": "https://github.com/francerz/php-http-utils.git",
-                "reference": "560f0b262eedf373274cbdb9f5065117c24eb5ef"
+                "reference": "98a2c4b85ad98982efbb3e08032893bda62fda58"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/francerz/php-http-utils/zipball/560f0b262eedf373274cbdb9f5065117c24eb5ef",
-                "reference": "560f0b262eedf373274cbdb9f5065117c24eb5ef",
+                "url": "https://api.github.com/repos/francerz/php-http-utils/zipball/98a2c4b85ad98982efbb3e08032893bda62fda58",
+                "reference": "98a2c4b85ad98982efbb3e08032893bda62fda58",
                 "shasum": ""
             },
             "require": {
@@ -193,9 +193,9 @@
             ],
             "support": {
                 "issues": "https://github.com/francerz/php-http-utils/issues",
-                "source": "https://github.com/francerz/php-http-utils/tree/v0.2.55"
+                "source": "https://github.com/francerz/php-http-utils/tree/v0.2.66"
             },
-            "time": "2024-05-07T16:22:54+00:00"
+            "time": "2025-04-09T16:09:33+00:00"
         },
         {
             "name": "francerz/json-tools",
@@ -322,16 +322,16 @@
         },
         {
             "name": "francerz/php-power-data",
-            "version": "v0.1.36",
+            "version": "v0.1.37",
             "source": {
                 "type": "git",
                 "url": "https://github.com/francerz/php-power-data.git",
-                "reference": "86287a39409f30cb312a77b1fc233d1366a23eea"
+                "reference": "59c7cfaa06a6db4a5c21b4e28049a62c7ea40011"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/francerz/php-power-data/zipball/86287a39409f30cb312a77b1fc233d1366a23eea",
-                "reference": "86287a39409f30cb312a77b1fc233d1366a23eea",
+                "url": "https://api.github.com/repos/francerz/php-power-data/zipball/59c7cfaa06a6db4a5c21b4e28049a62c7ea40011",
+                "reference": "59c7cfaa06a6db4a5c21b4e28049a62c7ea40011",
                 "shasum": ""
             },
             "type": "library",
@@ -349,22 +349,22 @@
             "description": "PHP data structures for complex data handling",
             "support": {
                 "issues": "https://github.com/francerz/php-power-data/issues",
-                "source": "https://github.com/francerz/php-power-data/tree/v0.1.36"
+                "source": "https://github.com/francerz/php-power-data/tree/v0.1.37"
             },
-            "time": "2023-11-29T19:12:39+00:00"
+            "time": "2024-09-06T16:18:02+00:00"
         },
         {
             "name": "itcolima/siitec-api-core",
-            "version": "v0.1.17",
+            "version": "v0.1.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnm-colima/siitec-api-core.git",
-                "reference": "34398b4bfb2a103d0e53b4ebacfc2fd809d15507"
+                "reference": "29d7a42d230022c95a0c8af7a877a5b7b23bbeea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnm-colima/siitec-api-core/zipball/34398b4bfb2a103d0e53b4ebacfc2fd809d15507",
-                "reference": "34398b4bfb2a103d0e53b4ebacfc2fd809d15507",
+                "url": "https://api.github.com/repos/tecnm-colima/siitec-api-core/zipball/29d7a42d230022c95a0c8af7a877a5b7b23bbeea",
+                "reference": "29d7a42d230022c95a0c8af7a877a5b7b23bbeea",
                 "shasum": ""
             },
             "require": {
@@ -383,9 +383,9 @@
             "description": "Nucleo de valores para la API de SIITEC.",
             "support": {
                 "issues": "https://github.com/tecnm-colima/siitec-api-core/issues",
-                "source": "https://github.com/tecnm-colima/siitec-api-core/tree/v0.1.17"
+                "source": "https://github.com/tecnm-colima/siitec-api-core/tree/v0.1.18"
             },
-            "time": "2024-08-21T16:44:56+00:00"
+            "time": "2025-06-20T19:36:49+00:00"
         },
         {
             "name": "psr/http-client",
@@ -621,16 +621,16 @@
         },
         {
             "name": "myclabs/deep-copy",
-            "version": "1.12.0",
+            "version": "1.13.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "3a6b9a42cd8f8771bd4295d13e1423fa7f3d942c"
+                "reference": "1720ddd719e16cf0db4eb1c6eca108031636d46c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/3a6b9a42cd8f8771bd4295d13e1423fa7f3d942c",
-                "reference": "3a6b9a42cd8f8771bd4295d13e1423fa7f3d942c",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/1720ddd719e16cf0db4eb1c6eca108031636d46c",
+                "reference": "1720ddd719e16cf0db4eb1c6eca108031636d46c",
                 "shasum": ""
             },
             "require": {
@@ -669,7 +669,7 @@
             ],
             "support": {
                 "issues": "https://github.com/myclabs/DeepCopy/issues",
-                "source": "https://github.com/myclabs/DeepCopy/tree/1.12.0"
+                "source": "https://github.com/myclabs/DeepCopy/tree/1.13.1"
             },
             "funding": [
                 {
@@ -677,7 +677,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-06-12T14:39:25+00:00"
+            "time": "2025-04-29T12:36:36+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -1096,16 +1096,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "8.5.39",
+            "version": "8.5.42",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "172ba97bcf97ae6ef86ca256adf77aece8a143fe"
+                "reference": "3a68a70824da546d26ac08ca4fced67341f4158f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/172ba97bcf97ae6ef86ca256adf77aece8a143fe",
-                "reference": "172ba97bcf97ae6ef86ca256adf77aece8a143fe",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/3a68a70824da546d26ac08ca4fced67341f4158f",
+                "reference": "3a68a70824da546d26ac08ca4fced67341f4158f",
                 "shasum": ""
             },
             "require": {
@@ -1116,7 +1116,7 @@
                 "ext-mbstring": "*",
                 "ext-xml": "*",
                 "ext-xmlwriter": "*",
-                "myclabs/deep-copy": "^1.12.0",
+                "myclabs/deep-copy": "^1.13.1",
                 "phar-io/manifest": "^2.0.4",
                 "phar-io/version": "^3.2.1",
                 "php": ">=7.2",
@@ -1174,7 +1174,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/8.5.39"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/8.5.42"
             },
             "funding": [
                 {
@@ -1186,11 +1186,19 @@
                     "type": "github"
                 },
                 {
+                    "url": "https://liberapay.com/sebastianbergmann",
+                    "type": "liberapay"
+                },
+                {
+                    "url": "https://thanks.dev/u/gh/sebastianbergmann",
+                    "type": "thanks_dev"
+                },
+                {
                     "url": "https://tidelift.com/funding/github/packagist/phpunit/phpunit",
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-07-10T11:43:00+00:00"
+            "time": "2025-05-02T06:33:00+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -1973,11 +1981,11 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": [],
+    "platform": {},
+    "platform-dev": {},
     "platform-overrides": {
         "php": "7.4.3"
     },

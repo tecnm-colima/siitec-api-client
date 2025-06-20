@@ -3,8 +3,10 @@
 namespace ITColima\SiitecApi\Resources\RH;
 
 use Francerz\Http\Utils\HttpHelper;
+use Francerz\JsonTools\JsonEncoder;
 use ITColima\SiitecApi\AbstractResource;
 use ITColima\SiitecApi\Model\App\Usuarios\Empleado;
+use ITColima\SiitecApi\Model\Rh\EmpleadoPlaza;
 
 class EmpleadosResource extends AbstractResource
 {
@@ -45,5 +47,22 @@ class EmpleadosResource extends AbstractResource
         $this->requiresClientAccessToken(true);
         $response = $this->protectedGet("/rh/empleados/{$empleado_id}", $params);
         return $this->cast(HttpHelper::getContent($response), Empleado::class);
+    }
+
+    /**
+     * Obtiene las plazas de un empleado a partir de su ID.
+     *
+     * @param int|string $empleado_id
+     * @param array $params
+     * Lista de parámetros disponibles para filtrar plazas:
+     * - `string clave_alta` Códigos de alta (10, 20, 95).
+     * - `string vigente_en` Fecha en formato (aaaa-mm-dd).
+     * @return EmpleadoPlaza[]
+     */
+    public function getPlazasById($empleado_id, array $params = [])
+    {
+        $this->requiresClientAccessToken(true);
+        $response = $this->protectedGet("/rh/empleados/{$empleado_id}/plazas", $params);
+        return JsonEncoder::decode((string)$response->getBody(), EmpleadoPlaza::class);
     }
 }
