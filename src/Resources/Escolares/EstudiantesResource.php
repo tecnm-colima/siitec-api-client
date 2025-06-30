@@ -8,6 +8,7 @@ use Francerz\JsonTools\JsonEncoder;
 use InvalidArgumentException;
 use ITColima\SiitecApi\AbstractResource;
 use ITColima\SiitecApi\Model\AlumnoContacto;
+use ITColima\SiitecApi\Model\Escolares\Estudiante;
 use ITColima\SiitecApi\Model\Escolares\EstudianteDocumento;
 use ITColima\SiitecApi\Model\Escolares\EstudianteEmergencia;
 
@@ -38,6 +39,24 @@ class EstudiantesResource extends AbstractResource
             return null;
         }
         return reset($output);
+    }
+
+    public function getByCarrera($carrera_id, $estatus = 1, array $params = [])
+    {
+        $this->requiresClientAccessToken(true);
+        $params['carrera_id'] = $carrera_id;
+        $params['estatus'] = $estatus;
+        $response = $this->protectedGet('/escolares/estudiantes', $params);
+        return JsonEncoder::decode((string)$response->getBody(), Estudiante::class);
+    }
+
+    public function getByCarreraYSemestre($carrera_id, $semestre, $estatus = 1, array $params = [])
+    {
+        $estudiantesFound = self::getByCarrera($carrera_id, $estatus, $params);
+        $estudiantesFiltered = array_filter($estudiantesFound, function ($e) use ($semestre) {
+            return $e->semestre == $semestre;
+        });
+        return $estudiantesFiltered;
     }
 
     /**
