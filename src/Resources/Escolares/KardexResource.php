@@ -4,6 +4,7 @@ namespace ITColima\SiitecApi\Resources\Escolares;
 
 use Francerz\Http\Utils\Constants\MediaTypes;
 use Francerz\Http\Utils\HttpHelper;
+use Francerz\JsonTools\JsonEncoder;
 use ITColima\SiitecApi\AbstractResource;
 use ITColima\SiitecApi\Model\Escolares\Kardex;
 use LogicException;
